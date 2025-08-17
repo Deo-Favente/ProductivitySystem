@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+    --color-vert: #8CD47E;
+    --color-orang: #F8D66D;
+    --color-rouge: #FF6961;
+}
+
+.papier {
+    position: absolute;
+    width: 80px;
+    height: 60px;
+    background: url("/papier.png");
+    background-size: cover;
+}
+
+.bg-vert {
+    position: relative;
+    /* pour contenir le papier */
+    overflow: hidden;
+}
