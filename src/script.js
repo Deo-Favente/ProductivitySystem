@@ -44,12 +44,12 @@ function creerPapier() {
     papierDiv.className = "papier";
     zoneVerte.appendChild(papierDiv);
 
-    const papierWidthVisuel = 80;
-    const papierHeightVisuel = 60;
+    const papierWidthVisuel = document.documentElement.style.getPropertyValue('--taille').replace('px', '');
+    const papierHeightVisuel = document.documentElement.style.getPropertyValue('--taille').replace('px', '');
 
     // hitbox plus petite
-    const papierWidthPhysique = 60;  // légèrement plus petit
-    const papierHeightPhysique = 40;
+    const papierWidthPhysique = document.documentElement.style.getPropertyValue('--taille').replace('px', '') * 0.8;
+    const papierHeightPhysique = document.documentElement.style.getPropertyValue('--taille').replace('px', '') * 0.8;
 
     const body = Matter.Bodies.rectangle(
         Math.random() * (width - papierWidthVisuel) + papierWidthVisuel / 2,
@@ -70,7 +70,12 @@ function creerPapier() {
 
 // --- Charger plusieurs papiers ---
 function chargerPapiers(nb = 5) {
+        document.documentElement.style.setProperty(
+          "--taille",
+          `${200 / Math.cbrt(nb)}px`
+        );
     for (let i = 0; i < nb; i++) creerPapier();
+    // Plus il y a de papiers, plus leur taille est petite pour qu'ils rentrent tous
 }
 
 // --- Animation ---
@@ -88,6 +93,6 @@ function update() {
 
 // --- Démarrage ---
 window.addEventListener('load', () => {
-    chargerPapiers(15); // nombre de papiers
+    chargerPapiers(10); // nombre de papiers
     update();
 });

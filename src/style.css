@@ -8,14 +8,28 @@
 
 .papier {
     position: absolute;
-    width: 80px;
-    height: 60px;
-    background: url("/papier.png");
+    width: var(--taille);
+    height: var(--taille);
+    background: url("/boule-papier.png");
     background-size: cover;
+}
+
+.conteneur-ticket {
+  overflow: scroll;
 }
 
 .bg-vert {
     position: relative;
     /* pour contenir le papier */
     overflow: hidden;
+}
+
+.fond-ticket {
+  background: url("/texture-papier.jpg");
+  background-size: cover;
+  --m:
+    conic-gradient(from   45deg at left,  #0000,#000 1deg 89deg,#0000 90deg) left /51% 10px repeat-y,
+    conic-gradient(from -135deg at right, #0000,#000 1deg 89deg,#0000 90deg) right/51% 10px repeat-y;
+  -webkit-mask: var(--m);
+          mask: var(--m);
 }
