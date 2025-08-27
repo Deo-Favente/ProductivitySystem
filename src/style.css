@@ -18,6 +18,10 @@
   overflow: scroll;
 }
 
+.conteneur-ticket::-webkit-scrollbar {
+  display: none;
+}
+
 .bg-vert {
     position: relative;
     /* pour contenir le papier */
@@ -33,3 +37,4 @@
   -webkit-mask: var(--m);
           mask: var(--m);
 }
+

@@ -1,112 +1,97 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Système de Productivité</title>
-        <link href="/src/style.css" rel="stylesheet">
-        <script
-            src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
-        <script type="module" src="/src/paper.js"></script>
-    </head>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Système de Productivité</title>
+    <link href="/src/style.css" rel="stylesheet">
+    <!-- CDN moteur physique -->
+    <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+</head>
 
-    <body class="m-0 p-0">
-        <section class="h-[100dvh] box-border p-6 overflow-hidden">
-            <div class="grid grid-cols-4 h-full min-h-0 gap-6">
+<body class="m-0 p-0">
+    <section class="h-[100dvh] box-border p-6 overflow-hidden">
+        <div class="grid grid-cols-4 h-full min-h-0 gap-6">
+            <div class="bg-rouge rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
+                <!-- Colonne rouge-->
+                <h1 class="mt-3 text-2xl">À Faire</h1>
+                <div class="conteneur-ticket">
+                    <div class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
+                        <h2>Tâche #1</h2>
+                        <h3 class="font-normal">Ranger le bureau</h3>
+                    </div>
+
+                    <div class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
+                        <h2>Tâche #2</h2>
+                        <h3 class="font-normal">Vendre le stock</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonne orange -->
+            <div class="bg-orang rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
+                <h1 class="mt-3 text-2xl">En Cours</h1>
+                <div class="conteneur-ticket">
+                    <div class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
+                        <h2>Tâche #1</h2>
+                        <h3 class="font-normal">Refaire les pubsRefaire les
+                            pubsRefaire les pubsRefaire les pubsRefaire les
+                            pubsRefaire les pubsRefaire les pubsRefaire les
+                            pubsRefaire les pubsRefaire les pubs</h3>
+                    </div>
+                    <div class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
+                        <h2>Tâche #1</h2>
+                        <h3 class="font-normal">Refaire les pubsRefaire les
+                            pubsRefaire les pubsRefaire les pubsRefaire les
+                            pubsRefaire les pubsRefaire les pubsRefaire les
+                            pubsRefaire les pubsRefaire les pubs</h3>
+                    </div>
+                    <div class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
+                        <h2>Tâche #1</h2>
+                        <h3 class="font-normal">Refaire les pubsRefaire les
+                            pubsRefaire les pubsRefaire les pubsRefaire les
+                            pubsRefaire les pubsRefaire les pubsRefaire les
+                            pubsRefaire les pubsRefaire les pubs</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonne verte -->
+            <div id="zone-verte" class="bg-vert rounded-xl flex justify-center text-gray-700 text-xl font-bold min-h-0">
+                <h1 class="mt-3 text-2xl">Terminé</h1>
+            </div>
+
+            <div class="grid grid-rows-[1fr_1fr_1fr_2fr] min-h-0 gap-5">
                 <div
-                    class="bg-rouge rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
-                    <!-- Colonne rouge-->
-                    <h1 class="mt-3 text-2xl">À Faire</h1>
-                    <div class="conteneur-ticket">
-                        <div
-                            class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
-                            <h2>Tâche #1</h2>
-                            <h3 class="font-normal">Ranger le bureau</h3>
-                        </div>
-
-                        <div
-                            class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
-                            <h2>Tâche #2</h2>
-                            <h3 class="font-normal">Vendre le stock</h3>
-                        </div>
-                    </div>
+                    class="bg-gray-400 rounded-xl flex flex-col items-center justify-center text-gray-800 text-center p-2">
+                    <h1 class="font-bold">Tâche en cours</h1>
+                    <h2 class="font-medium text-4xl sm:text-5xl md:text-6xl">#54</h2>
                 </div>
 
-                <!-- Colonne orange -->
                 <div
-                    class="bg-orang rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
-                    <h1 class="mt-3 text-2xl">En Cours</h1>
-                    <div class="conteneur-ticket">
-                        <div
-                            class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
-                            <h2>Tâche #1</h2>
-                            <h3 class="font-normal">Refaire les pubsRefaire les
-                                pubsRefaire les pubsRefaire les pubsRefaire les
-                                pubsRefaire les pubsRefaire les pubsRefaire les
-                                pubsRefaire les pubsRefaire les pubs</h3>
-                        </div>
-                        <div
-                            class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
-                            <h2>Tâche #1</h2>
-                            <h3 class="font-normal">Refaire les pubsRefaire les
-                                pubsRefaire les pubsRefaire les pubsRefaire les
-                                pubsRefaire les pubsRefaire les pubsRefaire les
-                                pubsRefaire les pubsRefaire les pubs</h3>
-                        </div>
-                        <div
-                            class="bg-white flex flex-col items-center mt-5 w-55 rounded p-3 fond-ticket">
-                            <h2>Tâche #1</h2>
-                            <h3 class="font-normal">Refaire les pubsRefaire les
-                                pubsRefaire les pubsRefaire les pubsRefaire les
-                                pubsRefaire les pubsRefaire les pubsRefaire les
-                                pubsRefaire les pubsRefaire les pubs</h3>
-                        </div>
-                    </div>
+                    class="bg-gray-400 rounded-xl flex flex-col items-center justify-center font-bold text-gray-800 min-h-0">
+                    <h1>Montant total</h1>
+                    <h2 class="font-medium text-4xl sm:text-5xl md:text-6xl">150€</h2>
                 </div>
 
-                <!-- Colonne verte -->
-                <div id="zone-verte"
-                    class="bg-vert rounded-xl flex justify-center text-gray-700 text-xl font-bold min-h-0">
-                    <h1 class="mt-3 text-2xl">Terminé</h1>
+                <div
+                    class="bg-gray-400 rounded-xl flex flex-col items-center justify-center font-bold text-gray-800 min-h-0">
+                    <h1>Croissance sur le mois</h1>
+                    <h2 class="font-medium text-4xl sm:text-5xl md:text-6xl">10%</h2>
                 </div>
 
-                <div class="grid grid-rows-[1fr_1fr_1fr_2fr] gap-5 min-h-0">
-                    <div
-                        class="bg-gray-400 rounded-xl flex flex-col items-center justify-center text-gray-800 text-center p-2 min-h-0">
-                        <h1 class="font-bold">Tâche en cours</h1>
-                        <h2
-                            class="font-medium text-4xl sm:text-5xl md:text-6xl">#54</h2>
-                    </div>
-
-                    <div
-                        class="bg-gray-400 rounded-xl flex flex-col items-center justify-center font-bold text-gray-800 min-h-0">
-                        <h1>Montant total</h1>
-                        <h2
-                            class="font-medium text-4xl sm:text-5xl md:text-6xl">150€</h2>
-                    </div>
-
-                    <div
-                        class="bg-gray-400 rounded-xl flex flex-col items-center justify-center font-bold text-gray-800 min-h-0">
-                        <h1>Croissance sur le mois</h1>
-                        <h2
-                            class="font-medium text-4xl sm:text-5xl md:text-6xl">10%</h2>
-                    </div>
-
-                    <div class="flex flex-col min-h-0">
-                        <div class="mb-2 shrink-0">Événements à venir</div>
-                        <div
-                            class="flex-1 min-h-0 flex items-center justify-center font-bold text-center text-[clamp(1rem,3vw,2rem)]">
-                            <iframe
-                                src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Europe%2FBrussels&showPrint=0&mode=AGENDA&showTitle=0&showNav=0&showDate=0&showTabs=0&showCalendars=0&showTz=0&src=OGUyNGRlMjEyZjMzMjBmYmQ0ZjNhMDI3ODM2YTRmMDVhMzgzZWU1YWE2Y2Y0ZThmNWQzZWYzNzJlOGNiYmRjNUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23ef6c00"
-                                style="border: 0" frameborder="0"
-                                class="w-full h-full"
-                                scrolling="no">
-                            </iframe>
-                        </div>
+                <div class="flex flex-col min-h-0 w-full">
+                    <div class="flex items-center font-bold text-[clamp(1rem,3vw,2rem)]">
+                        <div id="agenda-app"></div>
                     </div>
                 </div>
-            </section>
-        </body>
+            </div>
+    </section>
+    <!-- Animation du papier -->
+    <script type="module" src="/src/paper.js"></script>
+    <!-- Vue -->
+    <script type="module" src="/src/main.js"></script>
+</body>
 
-    </html>
+</html>
