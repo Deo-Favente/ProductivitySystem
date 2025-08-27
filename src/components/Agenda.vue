@@ -32,7 +32,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full max-w-full">
+  <div class="w-full">
     <h2 class="text-xl text-center font-bold mb-4 text-gray-800">📅 Prochains événements</h2>
 
     <div v-if="loading" class="text-gray-500">Chargement...</div>
