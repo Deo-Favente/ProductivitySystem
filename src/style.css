@@ -18,7 +18,7 @@
   overflow: scroll;
 }
 
-.conteneur-ticket::-webkit-scrollbar {
+.conteneur-ticket::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
