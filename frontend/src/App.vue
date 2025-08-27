@@ -1,34 +1,37 @@
+<script setup>
+import { onMounted } from "vue";
+import Ticket from "./components/Ticket.vue";
+import { useTickets } from "./composables/useTickets"; // <= IMPORT
+
+// <= APPEL du composable (très important)
+const { todo, doing, done, loadAll, deleteTicket } = useTickets();
+
+// charge depuis le backend au montage
+onMounted(async () => {
+  console.log("[App] onMounted → loadAll()");
+  await loadAll();
+});
+
+function handleRemove(id) {
+  deleteTicket(id).catch(console.error);
+}
+</script>
+
 <template>
   <section class="h-[100dvh] box-border p-6 overflow-scroll no-scrollbar">
     <div class="grid sm:grid-cols-1 md:grid-cols-4 h-full min-h-0 gap-6">
 
-      <!-- Colonne rouge -->
       <div class="bg-rouge rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
         <h1 class="mt-3 text-2xl">À Faire</h1>
         <div class="conteneur-ticket w-full flex flex-col items-center">
-          <Ticket
-            v-for="t in todo"
-            :key="t.id"
-            :id="t.id"
-            :title="t.title"
-            :subtitle="t.subtitle"
-            @remove="removeFrom('todo', $event)"
-          />
+          <Ticket v-for="t in todo" :key="t.id" v-bind="t" @remove="handleRemove" />
         </div>
       </div>
 
-      <!-- Colonne orange -->
       <div class="bg-orang rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
         <h1 class="mt-3 text-2xl">En Cours</h1>
         <div class="conteneur-ticket w-full flex flex-col items-center">
-          <Ticket
-            v-for="t in doing"
-            :key="t.id"
-            :id="t.id"
-            :title="t.title"
-            :subtitle="t.subtitle"
-            @remove="removeFrom('doing', $event)"
-          />
+          <Ticket v-for="t in doing" :key="t.id" v-bind="t" @remove="handleRemove" />
         </div>
       </div>
 
@@ -64,45 +67,3 @@
     </div>
   </section>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import Ticket from "./components/Ticket.vue";
-
-// Données exemples (ids uniques)
-const todo = ref([
-  { id: 1, title: "Tâche #1", subtitle: "Ranger le bureau" },
-  { id: 2, title: "Tâche #2", subtitle: "Vendre le stock" },
-]);
-
-const doing = ref([
-  {
-    id: 3,
-    title: "Tâche #1",
-    subtitle:
-      "Refaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs",
-  },
-  {
-    id: 4,
-    title: "Tâche #1",
-    subtitle:
-      "Refaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs",
-  },
-  {
-    id: 5,
-    title: "Tâche #1",
-    subtitle:
-      "Refaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs\nRefaire les pubs",
-  },
-]);
-
-// util pour accéder à la bonne liste
-const lists = { todo, doing };
-
-function removeFrom(listName, id) {
-  const listRef = lists[listName];
-  if (!listRef) return;
-  const i = listRef.value.findIndex((t) => t.id === id);
-  if (i !== -1) listRef.value.splice(i, 1);
-}
-</script>

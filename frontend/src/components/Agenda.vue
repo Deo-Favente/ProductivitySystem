@@ -36,7 +36,7 @@ onMounted(async () => {
     <h2 class="text-xl text-center font-bold mb-4 text-gray-800">📅 Prochains événements</h2>
 
     <div v-if="loading" class="text-gray-500">Chargement...</div>
-    <div v-else-if="events.length === 0" class="text-gray-400">Aucun événement à venir</div>
+    <div v-else-if="events.length === 0" class="text-gray-400 text-lg text-center">Aucun événement à venir</div>
     <div v-else class="overflow-x-auto">
       <table class="min-w-full border border-gray-200 bg-white overflow-hidden text-sm sm:text-base">
         <thead class="bg-gray-100">
