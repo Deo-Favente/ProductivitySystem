@@ -25,4 +25,5 @@ dist-ssr
 
 __pycache__/
 .env
+.env.production
 backend/data/*.json
