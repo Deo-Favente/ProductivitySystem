@@ -1,6 +1,6 @@
 {
   "meta": {
-    "nextId": 14,
+    "nextId": 11,
     "lastStartedId": 3
   },
   "todo": [
@@ -25,11 +25,6 @@
       "subtitle": "Detail"
     },
     {
-      "id": 5,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail"
-    },
-    {
       "id": 6,
       "title": "Nouvelle tache",
       "subtitle": "Detail"
@@ -41,11 +36,6 @@
     },
     {
       "id": 8,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail"
-    },
-    {
-      "id": 9,
       "title": "Nouvelle tache",
       "subtitle": "Detail"
     }

@@ -43,8 +43,8 @@ function handleRemove(id) { deleteTicket(id).catch(console.error); }
       <div
         id="zone-verte"
         ref="zoneVerte"
-        class="relative bg-vert rounded-xl flex items-start justify-center text-gray-700 text-xl font-bold
-               min-h-[260px] overflow-hidden"
+        class="hidden bg-vert rounded-xl items-start justify-center text-gray-700 text-xl font-bold
+               min-h-[260px] overflow-hidden md:flex"
       >
         <h1 class="mt-3 text-2xl">Terminé ({{ done.length }})</h1>
       </div>
