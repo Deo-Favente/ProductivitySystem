@@ -116,6 +116,8 @@ def register_new_card(uid):
     with open("../backend/data/cards.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+    print("Nouvelle carte, uid : " + str(card_data.get("uid")) + ", id : " + str(card_data.get("id")))
+
 stop = threading.Event()
 
 def sigint_handler(sig, frame):
