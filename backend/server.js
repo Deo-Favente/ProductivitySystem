@@ -8,32 +8,40 @@ app.use(express.json());
 
 /* ----------------- Utils IDs 1..50 ----------------- */
 
+function toId(x) {
+  const n = Number(x);
+  return Number.isInteger(n) && n >= 1 && n <= 50 ? n : null;
+}
+
+// 👉 On EXCLUT 'done' pour libérer l'ID dès qu'un ticket est terminé
 function collectUsedIds(db) {
   const used = new Set();
-  for (const col of ["todo", "doing", "done"]) {
+  for (const col of ["todo", "doing"]) {   // <— seulement ces colonnes
     for (const t of db[col] || []) {
-      if (Number.isInteger(t.id) && t.id >= 1 && t.id <= 50) used.add(t.id);
+      const n = toId(t.id);
+      if (n !== null) used.add(n);
     }
   }
   return used;
 }
 
-/** Renvoie le prochain ID libre en tournant sur 1..50 à partir de meta.nextId */
+/** Renvoie le plus petit ID libre (1..50), en ignorant 'done' */
 function nextFreeId(db) {
   db.meta ??= { nextId: 1, lastStartedId: null };
-  const start = db.meta.nextId ?? 1;
   const used = collectUsedIds(db);
 
-  for (let k = 0; k < 50; k++) {
-    const candidate = ((start - 1 + k) % 50) + 1; // 1..50
-    if (!used.has(candidate)) {
-      // on avance le pointeur pour le prochain appel
-      db.meta.nextId = ((candidate) % 50) + 1;
-      return candidate;
+  for (let cand = 1; cand <= 50; cand++) {
+    if (!used.has(cand)) {
+      // on met à jour nextId (facultatif, juste indicatif)
+      db.meta.nextId = cand + 1;
+      if (db.meta.nextId > 50) db.meta.nextId = 1;
+      return cand;
     }
   }
-  return null; // plein: 50 tickets présents
+  return null; // plein: 50 tickets effectivement actifs (todo+doing)
 }
+
+
 
 /** Migration: s'assurer que tous les tickets ont un id numérique unique 1..50 et initialiser nextId */
 function migrateNumericIds(db) {
