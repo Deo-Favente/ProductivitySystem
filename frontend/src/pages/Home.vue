@@ -17,7 +17,7 @@ onMounted(async () => {
   // 2) charger les données ; le composable appellera char_papier(done.length)
   await Promise.all([loadAll(), loadMeta(), loadMetrics()]);
   setInterval(() => { loadAll(); loadMeta(), loadMetrics(); }, 5000);
-  onBeforeUnmount(stop);
+  //onBeforeUnmount(stop);
 
   await loadAll(); // État initial
   start((tickets) => {
