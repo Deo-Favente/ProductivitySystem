@@ -2,12 +2,14 @@
 import { onMounted, ref } from "vue";
 import Ticket from "../components/Ticket.vue";
 import { setPaperZone } from "../paper.js";
+import { useRealtimeSfx } from "../composables/useRealtimeSfx";
 import { useTickets } from "../composables/useTickets";
 import { useMetrics } from "../composables/useMetrics";
 
 const zoneVerte = ref(null);
 const { todo, doing, done, lastStartedId, loadAll, loadMeta, deleteTicket } = useTickets();
 const { amount, growth, loadMetrics } = useMetrics();
+const { start, stop } = useRealtimeSfx();
 
 onMounted(async () => {
   // 1) brancher paper.js sur la vraie zone DOM
@@ -15,6 +17,20 @@ onMounted(async () => {
   // 2) charger les données ; le composable appellera char_papier(done.length)
   await Promise.all([loadAll(), loadMeta(), loadMetrics()]);
   setInterval(() => { loadAll(); loadMeta(), loadMetrics(); }, 5000);
+
+  await loadAll(); // État initial
+  start((tickets) => {
+    // met à jour l’UI avec l’état le plus récent
+    if (typeof setAll === "function") {
+      setAll(tickets);
+    } else {
+      // fallback si pas de setAll
+      todo.value  = tickets.todo  || [];
+      doing.value = tickets.doing || [];
+      done.value  = tickets.done  || [];
+    }
+  });
+onBeforeUnmount(stop);
 });
 
 function handleRemove(id) { deleteTicket(id).catch(console.error); }

@@ -5,7 +5,7 @@ const aComplete = new Audio("complete.mp3");
 //const aInfo = new Audio(infoUrl);
 
 // options
-[aStart, aComplete, aInfo].forEach(a => {
+[aStart, aComplete].forEach(a => {
   a.preload = "auto";
   a.playsInline = true; // iOS
   a.volume = 0.8;       // ajuste à ton goût
