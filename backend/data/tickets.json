@@ -5,6 +5,16 @@
   },
   "todo": [
     {
+      "id": 2,
+      "title": "Nouvelle tache",
+      "subtitle": "Detail"
+    },
+    {
+      "id": 3,
+      "title": "Nouvelle tache",
+      "subtitle": "Detail"
+    },
+    {
       "id": 4,
       "title": "Nouvelle tache",
       "subtitle": "Detail"
@@ -38,48 +48,36 @@
       "id": 10,
       "title": "Nouvelle tache",
       "subtitle": "Detail"
-    },
-    {
-      "id": 11,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail"
-    },
-    {
-      "id": 12,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail"
-    },
-    {
-      "id": 13,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail"
     }
   ],
   "doing": [],
   "done": [
     {
-      "id": 1,
+      "id": 11,
       "title": "Nouvelle tache",
       "subtitle": "Detail",
       "completedAt": "2025-08-28T00:16:54.323Z"
     },
     {
-      "id": 1,
+      "id": 12,
       "title": "Nouvelle tache",
       "subtitle": "Detail",
       "completedAt": "2025-08-28T00:17:11.549Z"
     },
     {
-      "id": 2,
+      "id": 13,
       "title": "Nouvelle tache",
       "subtitle": "Detail",
       "completedAt": "2025-08-28T00:17:43.323Z"
     },
     {
-      "id": 3,
+      "id": 14,
       "title": "Nouvelle tache",
       "subtitle": "Detail",
       "completedAt": "2025-08-28T00:19:09.559Z"
     }
-  ]
+  ],
+  "metrics": {
+    "amounts": []
+  }
 }
