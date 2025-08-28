@@ -6,7 +6,7 @@ const amount = ref(0);
 const growth = ref(0);
 
 async function loadMetrics() {
-  const res = await fetch(`${API}/api/metrics`);
+  const res = await fetch(`${API}/metrics`);
   if (!res.ok) throw new Error(`GET /api/metrics -> ${res.status}`);
   const data = await res.json();
   amount.value = Number(data.currentAmount || 0);
@@ -14,7 +14,7 @@ async function loadMetrics() {
 }
 
 async function submitAmount(newAmount) {
-  const res = await fetch(`${API}/api/metrics/amount`, {
+  const res = await fetch(`${API}/metrics/amount`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ amount: newAmount })

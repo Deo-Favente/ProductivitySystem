@@ -136,14 +136,14 @@ def act_on_ticket(ticket_id, column) -> str:
     """Retourne True si une action API a bien été effectuée."""
     try:
         if column == "todo":
-            r = requests.post(f"{API_BASE}/api/tickets/{ticket_id}/start", timeout=5)
+            r = requests.post(f"{API_BASE}/tickets/{ticket_id}/start", timeout=5)
             if r.ok:
                 print(f"[OK] Ticket #{ticket_id} : À faire → En cours")
                 return "start"
             print(f"[ERREUR] start #{ticket_id} {r.status_code}: {r.text}")
             return None
         elif column == "doing":
-            r = requests.post(f"{API_BASE}/api/tickets/{ticket_id}/complete", timeout=5)
+            r = requests.post(f"{API_BASE}/tickets/{ticket_id}/complete", timeout=5)
             if r.ok:
                 print(f"[OK] Ticket #{ticket_id} : En cours → Terminé")
                 return "complete"
