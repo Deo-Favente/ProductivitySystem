@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { chargerPapier } from "../paper.js"; // << appel direct (pas de window)
 
-const API = import.meta.env.VITE_API_BASE || "";
+const API = import.meta.env.VITE_API_BASE || "/api";
 const api = (path="") => `${API}${path.startsWith("/") ? path : `/${path}`}`;
 
 

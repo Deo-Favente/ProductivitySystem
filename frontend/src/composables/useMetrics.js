@@ -1,6 +1,6 @@
 // src/composables/useMetrics.js
 import { ref } from "vue";
-const API = import.meta.env.VITE_API_BASE || "";
+const API = import.meta.env.VITE_API_BASE || "/api";
 const api = (path="") => `${API}${path.startsWith("/") ? path : `/${path}`}`;
 
 const amount = ref(0);
