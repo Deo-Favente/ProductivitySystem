@@ -1,9 +1,7 @@
-import startUrl from "../assets/start.mp3";
-import completeUrl from "../assets/complete.mp3";
 //import infoUrl from "../assets/info.mp3";
 
-const aStart = new Audio(startUrl);
-const aComplete = new Audio(completeUrl);
+const aStart = new Audio("start.mp3");
+const aComplete = new Audio("complete.mp3");
 //const aInfo = new Audio(infoUrl);
 
 // options
