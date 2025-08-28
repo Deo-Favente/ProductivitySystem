@@ -1,6 +1,7 @@
 // src/composables/useTickets.js
 import { ref } from "vue";
-import { chargerPapier } from "../paper.js"; // << appel direct (pas de window)
+import { chargerPapier } from "../paper.js"; 
+import { sfx } from "../lib/sfx.js"; 
 
 const API = import.meta.env.VITE_API_BASE || "/api";
 const api = (path="") => `${API}${path.startsWith("/") ? path : `/${path}`}`;
@@ -63,6 +64,7 @@ async function startTicket(id) {
     doing.value.push(t);
   }
   lastStartedId.value = id;
+  sfx.start();
 }
 
 async function completeTicket(id) {
@@ -74,6 +76,7 @@ async function completeTicket(id) {
     done.value.push(t);
   }
   notifyPaper(); // MAJ des papiers quand un ticket passe en "Terminé"
+  sfx.complete();
 }
 
 export function useTickets() {
