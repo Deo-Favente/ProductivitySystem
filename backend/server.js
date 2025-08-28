@@ -1,60 +1,92 @@
 import express from "express";
 import cors from "cors";
-import { nanoid } from "nanoid";
 import { withDB } from "./storage.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* ---------- Helpers numérotation 1..50 ---------- */
+/* ----------------- Utils IDs 1..50 ----------------- */
 
-function gatherUsedNumbers(db) {
+function collectUsedIds(db) {
   const used = new Set();
   for (const col of ["todo", "doing", "done"]) {
     for (const t of db[col] || []) {
-      if (typeof t.no === "number") used.add(t.no);
+      if (Number.isInteger(t.id) && t.id >= 1 && t.id <= 50) used.add(t.id);
     }
   }
   return used;
 }
 
-function nextFreeNumber(db) {
-  const used = gatherUsedNumbers(db);
-  for (let n = 1; n <= 50; n++) {
-    if (!used.has(n)) return n;
-  }
-  return null; // plus de place
-}
+/** Renvoie le prochain ID libre en tournant sur 1..50 à partir de meta.nextId */
+function nextFreeId(db) {
+  db.meta ??= { nextId: 1, lastStartedId: null };
+  const start = db.meta.nextId ?? 1;
+  const used = collectUsedIds(db);
 
-/** Migration douce: si un ticket n'a pas de 'no', on lui attribue le prochain libre */
-function migrateAddNumbers(db) {
-  let changed = false;
-  for (const col of ["todo", "doing", "done"]) {
-    for (const t of db[col] || []) {
-      if (typeof t.no !== "number") {
-        const n = nextFreeNumber(db);
-        if (!n) continue;
-        t.no = n;
-        changed = true;
-      }
+  for (let k = 0; k < 50; k++) {
+    const candidate = ((start - 1 + k) % 50) + 1; // 1..50
+    if (!used.has(candidate)) {
+      // on avance le pointeur pour le prochain appel
+      db.meta.nextId = ((candidate) % 50) + 1;
+      return candidate;
     }
   }
-  return changed;
+  return null; // plein: 50 tickets présents
 }
 
-/** Trouver un ticket et sa position */
-function findTicket(db, id) {
+/** Migration: s'assurer que tous les tickets ont un id numérique unique 1..50 et initialiser nextId */
+function migrateNumericIds(db) {
+  db.todo ??= [];
+  db.doing ??= [];
+  db.done ??= [];
+  db.meta ??= { nextId: 1, lastStartedId: null };
+  db.metrics ??= { amounts: [] };
+
+  // Si tous les ids sont déjà valides et uniques dans 1..50, on se contente d'ajuster nextId
+  const used = collectUsedIds(db);
+  const total = (db.todo.length + db.doing.length + db.done.length);
+  const allNumericValid = used.size === total && total <= 50;
+
+  if (allNumericValid) {
+    // Place nextId au premier libre après balayage
+    for (let k = 0; k < 50; k++) {
+      const candidate = ((db.meta.nextId ?? 1) - 1 + k) % 50 + 1;
+      if (!used.has(candidate)) {
+        db.meta.nextId = candidate;
+        break;
+      }
+    }
+    return;
+  }
+
+  // Sinon, on renumérote proprement 1..N (N <= 50) dans l'ordre: todo -> doing -> done
+  const cols = ["todo", "doing", "done"];
+  let n = 0;
+  for (const col of cols) {
+    for (const t of db[col]) {
+      n++;
+      if (n > 50) {
+        throw new Error("Plus de 50 tickets: impossible de renuméroter sur 1..50");
+      }
+      t.id = n;
+    }
+  }
+  db.meta.nextId = (n % 50) + 1;
+}
+
+/** Trouver un ticket par id numérique */
+function findTicket(db, idNum) {
   for (const col of ["todo", "doing", "done"]) {
-    const idx = (db[col] || []).findIndex((t) => t.id === id);
+    const idx = (db[col] || []).findIndex(t => t.id === idNum);
     if (idx >= 0) return { col, idx, ticket: db[col][idx] };
   }
   return null;
 }
 
-/** Déplacer un ticket vers une colonne */
-function moveTicket(db, id, to) {
-  const found = findTicket(db, id);
+/** Déplacer un ticket vers une autre colonne */
+function moveTicket(db, idNum, to) {
+  const found = findTicket(db, idNum);
   if (!found) return null;
   const { col, idx, ticket } = found;
   db[col].splice(idx, 1);
@@ -63,26 +95,18 @@ function moveTicket(db, id, to) {
   return { from: col, to, ticket };
 }
 
-/* ---------- Bootstrap: s'assurer des numéros ---------- */
+/* ----------------- Bootstrap ----------------- */
 await withDB((db) => {
-  db.todo ??= [];
-  db.doing ??= [];
-  db.done ??= [];
-  const changed = migrateAddNumbers(db);
-  return { value: null }; // on persiste si changed (writeDB se fait quand persist !== false)
+  migrateNumericIds(db);
+  return { value: null };
 });
 
-/* ---------- Routes ---------- */
+/* ----------------- Routes Tickets ----------------- */
 
-// GET /api/tickets[?column=todo|doing|done]
-app.get("/api/tickets", async (req, res) => {
+// GET /api/tickets
+app.get("/api/tickets", async (_req, res) => {
   const data = await withDB((db) => ({ value: db, persist: false }));
-  const { column } = req.query;
-  if (column) {
-    if (!data[column]) return res.status(400).json({ error: "Column invalide" });
-    return res.json({ [column]: data[column] });
-  }
-  return res.json({
+  res.json({
     todo: data.todo ?? [],
     doing: data.doing ?? [],
     done:  data.done  ?? []
@@ -90,42 +114,36 @@ app.get("/api/tickets", async (req, res) => {
 });
 
 // POST /api/tickets { title, subtitle, column? }
-// → attribue automatiquement un numéro de 1 à 50 (champ "no")
 app.post("/api/tickets", async (req, res) => {
   const { title, subtitle, column = "todo" } = req.body || {};
   if (!title || !subtitle) return res.status(400).json({ error: "title et subtitle requis" });
 
-  let ticket;
-  const ok = await withDB((db) => {
-    const n = nextFreeNumber(db);
-    if (!n) {
-      return { value: null, persist: false }; // pas de place
-    }
-    ticket = { id: nanoid(), no: n, title, subtitle };
+  let created = null;
+  await withDB((db) => {
+    const id = nextFreeId(db);
+    if (!id) return { value: null, persist: false }; // plein (50)
+    const ticket = { id, title, subtitle };
     db[column] ??= [];
     db[column].push(ticket);
+    created = ticket;
     return { value: ticket };
   });
 
-  if (!ticket) {
-    return res.status(409).json({ error: "Capacité atteinte: 50 tickets numérotés" });
-  }
-  res.status(201).json(ticket);
+  if (!created) return res.status(409).json({ error: "Capacité atteinte: 50 tickets" });
+  res.status(201).json(created);
 });
 
 // DELETE /api/tickets/:id
-// → libère le numéro pour de futurs tickets
 app.delete("/api/tickets/:id", async (req, res) => {
-  const { id } = req.params;
+  const idNum = Number(req.params.id);
+  if (!Number.isInteger(idNum) || idNum < 1 || idNum > 50) {
+    return res.status(400).json({ error: "id doit être un entier entre 1 et 50" });
+  }
   let removed = null;
   await withDB((db) => {
     for (const col of ["todo", "doing", "done"]) {
-      const idx = db[col]?.findIndex((t) => t.id === id);
-      if (idx >= 0) {
-        removed = db[col][idx];
-        db[col].splice(idx, 1);
-        break;
-      }
+      const idx = db[col]?.findIndex((t) => t.id === idNum);
+      if (idx >= 0) { removed = db[col][idx]; db[col].splice(idx, 1); break; }
     }
     return { value: removed };
   });
@@ -133,61 +151,78 @@ app.delete("/api/tickets/:id", async (req, res) => {
   res.json({ ok: true, removed });
 });
 
-// PATCH /api/tickets/:id/move { to: "todo"|"doing"|"done" } (générique, conserve)
-app.patch("/api/tickets/:id/move", async (req, res) => {
-  const { id } = req.params;
-  const { to } = req.body || {};
-  if (!["todo", "doing", "done"].includes(to)) {
-    return res.status(400).json({ error: "Colonne cible invalide" });
-  }
-  let moved = null;
-  await withDB((db) => {
-    const result = moveTicket(db, id, to);
-    return { value: result };
-  });
-  if (!moved) return res.status(404).json({ error: "Ticket introuvable" });
-  res.json({ ok: true, moved });
-});
-
-// --- NOUVEAU ---
-// POST /api/tickets/:id/start  → "À faire" → "En cours"
+// POST /api/tickets/:id/start  (À faire -> En cours) + mémorise le dernier id démarré
 app.post("/api/tickets/:id/start", async (req, res) => {
-  const { id } = req.params;
+  const idNum = Number(req.params.id);
+  if (!Number.isInteger(idNum)) return res.status(400).json({ error: "id invalide" });
+
   let result = null;
   await withDB((db) => {
-    const found = findTicket(db, id);
-    if (!found) return { value: null, persist: false };
-    if (found.col !== "todo") {
-      return { value: { error: "Transition invalide: doit venir de 'todo'" }, persist: false };
-    }
-    result = moveTicket(db, id, "doing");
+    const found = findTicket(db, idNum);
+    if (!found || found.col !== "todo") return { value: null, persist: false };
+    result = moveTicket(db, idNum, "doing");
+    db.meta ??= { nextId: 1, lastStartedId: null };
+    db.meta.lastStartedId = idNum;
     return { value: result };
   });
-  if (!result) return res.status(404).json({ error: "Ticket introuvable" });
-  if (result.error) return res.status(400).json(result);
+  if (!result) return res.status(404).json({ error: "Ticket introuvable ou déjà en cours" });
   res.json({ ok: true, moved: result });
 });
 
-// --- NOUVEAU ---
-// POST /api/tickets/:id/complete → "En cours" → "Terminé"
+// POST /api/tickets/:id/complete  (En cours -> Terminé)
 app.post("/api/tickets/:id/complete", async (req, res) => {
-  const { id } = req.params;
+  const idNum = Number(req.params.id);
+  if (!Number.isInteger(idNum)) return res.status(400).json({ error: "id invalide" });
+
   let result = null;
   await withDB((db) => {
-    const found = findTicket(db, id);
-    if (!found) return { value: null, persist: false };
-    if (found.col !== "doing") {
-      return { value: { error: "Transition invalide: doit venir de 'doing'" }, persist: false };
-    }
-    // option: timestamp de complétion
+    const found = findTicket(db, idNum);
+    if (!found || found.col !== "doing") return { value: null, persist: false };
     found.ticket.completedAt = new Date().toISOString();
-    result = moveTicket(db, id, "done");
+    result = moveTicket(db, idNum, "done");
     return { value: result };
   });
-  if (!result) return res.status(404).json({ error: "Ticket introuvable" });
-  if (result.error) return res.status(400).json(result);
+  if (!result) return res.status(404).json({ error: "Ticket introuvable ou pas en cours" });
   res.json({ ok: true, moved: result });
 });
 
+/* ----------------- Meta & Metrics (inchangés sauf types) ----------------- */
+
+app.get("/api/meta", async (_req, res) => {
+  const meta = await withDB((db) => ({ value: db.meta ?? { nextId: 1, lastStartedId: null }, persist: false }));
+  res.json({ lastStartedId: meta.lastStartedId ?? null });
+});
+
+// métriques simples (montant + croissance)
+function computeMetrics(metrics) {
+  const arr = metrics?.amounts ?? [];
+  const n = arr.length;
+  const current = n ? Number(arr[n - 1].amount) : 0;
+  const previous = n > 1 ? Number(arr[n - 2].amount) : 0;
+  const growthPercent = previous > 0 ? ((current - previous) / previous) * 100 : 0;
+  return { currentAmount: current, previousAmount: previous, growthPercent };
+}
+
+app.get("/api/metrics", async (_req, res) => {
+  const data = await withDB((db) => ({ value: db.metrics ?? { amounts: [] }, persist: false }));
+  res.json(computeMetrics(data));
+});
+
+app.post("/api/metrics/amount", async (req, res) => {
+  const { amount } = req.body || {};
+  const value = Number(amount);
+  if (!Number.isFinite(value)) return res.status(400).json({ error: "amount doit être un nombre" });
+
+  let out = null;
+  await withDB((db) => {
+    db.metrics ??= { amounts: [] };
+    db.metrics.amounts.push({ date: new Date().toISOString(), amount: value });
+    out = computeMetrics(db.metrics);
+    return { value: out };
+  });
+  res.status(201).json(out);
+});
+
+/* ------------------------------------------------------- */
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`API tickets → http://localhost:${PORT}`));
