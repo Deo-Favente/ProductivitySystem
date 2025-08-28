@@ -17,6 +17,7 @@ onMounted(async () => {
   // 2) charger les données ; le composable appellera char_papier(done.length)
   await Promise.all([loadAll(), loadMeta(), loadMetrics()]);
   setInterval(() => { loadAll(); loadMeta(), loadMetrics(); }, 5000);
+  onBeforeUnmount(stop);
 
   await loadAll(); // État initial
   start((tickets) => {
@@ -30,7 +31,6 @@ onMounted(async () => {
       done.value  = tickets.done  || [];
     }
   });
-onBeforeUnmount(stop);
 });
 
 function handleRemove(id) { deleteTicket(id).catch(console.error); }
