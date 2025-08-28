@@ -26,8 +26,8 @@ async function submit() {
       subtitle: subtitle.value.trim(),
       column: column.value
     });
-    // Retour à l’accueil
-    router.push({ name: "home" });
+    // Afficher un message de succès
+    alert("Tâche créée avec succès !");
   } catch (e) {
     errorMsg.value = "Échec de la création. Réessaie.";
     console.error(e);
