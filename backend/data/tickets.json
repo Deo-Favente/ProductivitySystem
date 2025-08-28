@@ -1,9 +1,14 @@
 {
   "meta": {
-    "nextId": 2,
+    "nextId": 14,
     "lastStartedId": 3
   },
   "todo": [
+    {
+      "id": 1,
+      "title": "Nouvelle tache",
+      "subtitle": "Detail"
+    },
     {
       "id": 2,
       "title": "Nouvelle tache",
@@ -43,35 +48,30 @@
       "id": 9,
       "title": "Nouvelle tache",
       "subtitle": "Detail"
-    },
-    {
-      "id": 10,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail"
     }
   ],
   "doing": [],
   "done": [
     {
-      "id": 11,
+      "id": 10,
       "title": "Nouvelle tache",
       "subtitle": "Detail",
       "completedAt": "2025-08-28T00:16:54.323Z"
     },
     {
-      "id": 12,
+      "id": 11,
       "title": "Nouvelle tache",
       "subtitle": "Detail",
       "completedAt": "2025-08-28T00:17:11.549Z"
     },
     {
-      "id": 13,
+      "id": 12,
       "title": "Nouvelle tache",
       "subtitle": "Detail",
       "completedAt": "2025-08-28T00:17:43.323Z"
     },
     {
-      "id": 14,
+      "id": 13,
       "title": "Nouvelle tache",
       "subtitle": "Detail",
       "completedAt": "2025-08-28T00:19:09.559Z"

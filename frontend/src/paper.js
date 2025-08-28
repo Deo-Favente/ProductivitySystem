@@ -7,50 +7,35 @@ let world = null;
 let walls = [];
 const papiers = [];
 
-/* ---------- util ---------- */
 function getZoneSize() {
-  if (!zoneEl) return { width: 600, height: 300 };
+  if (!zoneEl) return { width: 265, height: 770 };
   const rect = zoneEl.getBoundingClientRect();
-  // fallback si l'élément est "hidden" (width/height = 0)
-  const width = Math.max( rect.width  || 0, 600 );
-  const height = Math.max( rect.height || 0, 300 );
+  const width = Math.max(rect.width || 0, 265);
+  const height = Math.max(rect.height || 0, 770);
   return { width, height };
 }
 
 function setSizeForCount(n) {
-  // plus il y a de papiers, plus ils sont petits
   const taille = 200 / Math.cbrt(Math.max(1, n));
   document.documentElement.style.setProperty("--taille", `${taille}px`);
 }
 
-/* ---------- init paresseux ---------- */
-function initIfNeeded() {
-  if (engine) return; // déjà prêt
-
-  zoneEl = document.getElementById("zone-verte");
-  if (!zoneEl) {
-    throw new Error(
-      "[paper] #zone-verte introuvable. Assure-toi que Vue a rendu le template avant d'appeler char_papier(n)."
-    );
-  }
-
-  const { width, height } = getZoneSize();
-
+function initEngine() {
+  if (engine) return;
   engine = Matter.Engine.create();
   world = engine.world;
   world.gravity.x = 0;
   world.gravity.y = 1;
 
   const thickness = 50;
+  const { width, height } = getZoneSize();
   const ground  = Matter.Bodies.rectangle(width / 2, height + thickness / 2, width, thickness, { isStatic: true });
   const ceiling = Matter.Bodies.rectangle(width / 2, -thickness / 2, width, thickness, { isStatic: true });
   const left    = Matter.Bodies.rectangle(-thickness / 2, height / 2, thickness, height, { isStatic: true });
   const right   = Matter.Bodies.rectangle(width + thickness / 2, height / 2, thickness, height, { isStatic: true });
-
   walls = [ground, ceiling, left, right];
   Matter.World.add(world, walls);
 
-  // boucle d'animation
   const update = () => {
     Matter.Engine.update(engine, 1000 / 60);
     for (const { div, body } of papiers) {
@@ -62,10 +47,10 @@ function initIfNeeded() {
   };
   update();
 
-  // (optionnel) ajuste les murs si la zone est redimensionnée
+  // adapte les murs au resize
   const ro = new ResizeObserver(() => {
+    const thickness = 50;
     const { width: w, height: h } = getZoneSize();
-    // retire anciens murs puis recrée
     Matter.World.remove(world, walls);
     const ground2  = Matter.Bodies.rectangle(w / 2, h + thickness / 2, w, thickness, { isStatic: true });
     const ceiling2 = Matter.Bodies.rectangle(w / 2, -thickness / 2, w, thickness, { isStatic: true });
@@ -77,15 +62,22 @@ function initIfNeeded() {
   ro.observe(zoneEl);
 }
 
-/* ---------- création / gestion papier ---------- */
+/** À appeler depuis App.vue pour donner la zone verte */
+export function setPaperZone(el) {
+  zoneEl = el;
+  if (!zoneEl) return;
+  // s’assurer que la zone peut accueillir des éléments positionnés
+  if (getComputedStyle(zoneEl).position === "static") {
+    zoneEl.style.position = "relative";
+  }
+  initEngine();
+}
+
 function createPaper() {
   const taille = parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue("--taille")
   ) || 100;
-
-  // hitbox plus petite
   const hit = taille * 0.8;
-
   const { width, height } = getZoneSize();
 
   const papierDiv = document.createElement("div");
@@ -109,11 +101,10 @@ function createPaper() {
   papiers.push({ div: papierDiv, body });
 }
 
-/* ---------- API publique ---------- */
-// Ajuste le nombre de papiers visibles au nombre n (ajoute/retire le delta)
-export function chargerPapiers(n) {
-  initIfNeeded();
-
+/** Ajuste le nombre de papiers à n */
+export function chargerPapier(n) {
+  if (!zoneEl) throw new Error("[paper] setPaperZone(el) doit être appelé avant chargerPapier(n).");
+  initEngine();
   setSizeForCount(n);
 
   const cur = papiers.length;
@@ -130,7 +121,6 @@ export function chargerPapiers(n) {
   }
 }
 
-// Optionnel: reset complet
 export function reset_papiers() {
   if (!engine) return;
   while (papiers.length) {

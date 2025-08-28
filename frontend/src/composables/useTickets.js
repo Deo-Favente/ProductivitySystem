@@ -1,24 +1,33 @@
 // src/composables/useTickets.js
 import { ref } from "vue";
+import { chargerPapier } from "../paper.js"; // << appel direct (pas de window)
 
 const API = import.meta.env.VITE_API_BASE || "";
 
-const todo = ref([]);
+const todo  = ref([]);
 const doing = ref([]);
-const done = ref([]);
+const done  = ref([]);
+const lastStartedId = ref(null);
 
-import { chargerPapiers } from "../paper.js";
-function notifyPaper() { try { chargerPapiers(done.value.length); } catch (e) { console.error(e); } }
+function notifyPaper() {
+  try { chargerPapier(done.value.length); } catch (e) { /* paper non initialisé ? */ }
+}
 
-async function loadAll() {
+export async function loadAll() {
   const res = await fetch(`${API}/api/tickets`);
   if (!res.ok) throw new Error(`GET /api/tickets -> ${res.status}`);
   const data = await res.json();
-  todo.value = Array.isArray(data.todo) ? data.todo : [];
-  doing.value = Array.isArray(data.doing) ? data.doing : [];
-  done.value = Array.isArray(data.done) ? data.done : [];
-  // synchro initiale (optionnel)
-  notifyPaper();
+  todo.value  = data.todo  ?? [];
+  doing.value = data.doing ?? [];
+  done.value  = data.done  ?? [];
+  notifyPaper(); // synchronise les papiers au démarrage
+}
+
+async function loadMeta() {
+  const res = await fetch(`${API}/api/meta`);
+  if (!res.ok) throw new Error(`GET /api/meta -> ${res.status}`);
+  const data = await res.json();
+  lastStartedId.value = data.lastStartedId ?? null;
 }
 
 async function addTicket({ title, subtitle, column = "todo" }) {
@@ -28,10 +37,8 @@ async function addTicket({ title, subtitle, column = "todo" }) {
     body: JSON.stringify({ title, subtitle, column })
   });
   if (!res.ok) throw new Error("Ajout échoué");
-  const ticket = await res.json();
-  if (column === "todo") todo.value.push(ticket);
-  if (column === "doing") doing.value.push(ticket);
-  if (column === "done") done.value.push(ticket);
+  const t = await res.json();
+  (column === "todo" ? todo : column === "doing" ? doing : done).value.push(t);
 }
 
 async function deleteTicket(id) {
@@ -41,42 +48,37 @@ async function deleteTicket(id) {
     const i = list.value.findIndex((t) => t.id === id);
     if (i !== -1) list.value.splice(i, 1);
   }
+  // (option) si tu veux refléter la baisse en zone verte, déduis ici si c'était un done
+  notifyPaper();
 }
 
-// --- API ONLY: démarrer (À faire -> En cours)
 async function startTicket(id) {
   const res = await fetch(`${API}/api/tickets/${id}/start`, { method: "POST" });
   if (!res.ok) throw new Error("Start échoué");
-  const { moved } = await res.json(); // { from:"todo", to:"doing", ticket:{...} }
-
-  // maj locales
   const i = todo.value.findIndex(t => t.id === id);
   if (i !== -1) {
     const t = todo.value.splice(i, 1)[0];
     doing.value.push(t);
   }
+  lastStartedId.value = id;
 }
 
-// --- API ONLY: compléter (En cours -> Terminé) + rappel char_papier
 async function completeTicket(id) {
   const res = await fetch(`${API}/api/tickets/${id}/complete`, { method: "POST" });
   if (!res.ok) throw new Error("Completion échouée");
-  const { moved } = await res.json(); // { from:"doing", to:"done", ticket:{...} }
-
   const i = doing.value.findIndex(t => t.id === id);
   if (i !== -1) {
     const t = doing.value.splice(i, 1)[0];
     done.value.push(t);
   }
-
-  // >>> rappelle l'animation papier avec le nouveau total terminé
-  notifyPaper();
+  notifyPaper(); // MAJ des papiers quand un ticket passe en "Terminé"
 }
 
 export function useTickets() {
   return {
     todo, doing, done,
-    loadAll, addTicket, deleteTicket,
+    lastStartedId, loadAll, loadMeta,
+    addTicket, deleteTicket,
     startTicket, completeTicket
   };
 }

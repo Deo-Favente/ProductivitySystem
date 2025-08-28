@@ -13,8 +13,7 @@
     >
       ✕
     </button>
-
-    <h2 class="font-bold"><template v-if="no">#{{ no }} — </template>{{ title }}</h2>
+    <h2 class="font-bold"> #{{ id }} {{ title }}</h2>
     <h3 class="font-normal text-center whitespace-pre-line break-words">{{ subtitle }}</h3>
   </div>
 </template>
