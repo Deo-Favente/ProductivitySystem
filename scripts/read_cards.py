@@ -12,9 +12,9 @@ from smartcard.CardConnection import CardConnection
 from smartcard.Exceptions import CardConnectionException, NoCardException
 
 # ---------- Config ----------
-API_BASE = os.getenv("API_BASE", "/api").rstrip("/")
-CARDS_PATH = Path("data/cards.json")
-TICKETS_PATH = Path("data/tickets.json")
+API_BASE = "http://localhost/api"
+CARDS_PATH = Path("/opt/productivity/backend/data/cards.json")
+TICKETS_PATH = Path("/opt/productivity/backend/data/tickets.json")
 START_WAV   = Path(os.getenv("SOUND_START",   "/home/pi/sounds/start.wav"))
 COMPLETE_WAV= Path(os.getenv("SOUND_COMPLETE","/home/pi/sounds/complete.wav"))
 INFO_WAV    = Path(os.getenv("SOUND_INFO",    "/home/pi/sounds/info.wav"))
@@ -179,7 +179,7 @@ def main_loop():
         if uid == last_uid:
             # même carte que précédemment → attendre le retrait pour éviter spam
             wait_card_removed_polling(reader)
-            continue
+            #continue
 
         print(f"UID: {uid}")
         ticket_id = uid_to_ticket_id(uid)

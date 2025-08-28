@@ -13,7 +13,7 @@ from smartcard.Exceptions import CardConnectionException, NoCardException
 import json
 
 GET_UID_APDU = [0xFF, 0xCA, 0x00, 0x00, 0x00]  # -> UID + 0x90 0x00 si OK
-DB_PATH = Path("data/cards.json")
+DB_PATH = Path("../backend/data/cards.json")
 
 def _ensure_db():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -50,26 +50,29 @@ import json
 def is_card_registered(uid):
     """Vérifie si une carte est déjà enregistrée (robuste si fichier vide)."""
     try:
-        with open("data/cards.json", "r", encoding="utf-8") as f:
+        with open("../backend/data/cards.json", "r", encoding="utf-8") as f:
             content = f.read().strip()
             if not content:
-                return False  # fichier vide
+                return None #Fichier vide
             data = json.loads(content)
     except FileNotFoundError:
-        return False
+        return None
     except json.JSONDecodeError:
         # fichier corrompu / mal formé
-        return False
+        return None
 
     cards = data.get("cards", [])
-    return any(c.get("uid") == uid for c in cards)
+    for c in cards:
+        if c.get("uid") == uid:
+            return c.get("id")
+    return None
 
 
 def get_next_card_id(data=None):
     """Retourne l'ID suivant (max+1). Accepte en option un dict 'data' déjà chargé."""
     if data is None:
         try:
-            with open("data/cards.json", "r", encoding="utf-8") as f:
+            with open("../backend/data/cards.json", "r", encoding="utf-8") as f:
                 content = f.read().strip()
                 if not content:
                     return 1  # fichier vide
@@ -87,12 +90,14 @@ def get_next_card_id(data=None):
 def register_new_card(uid):
     """Enregistre une nouvelle carte dans la liste 'cards' du JSON (écriture propre)."""
     # déjà présent ? on ne duplique pas
-    if is_card_registered(uid):
+    res = is_card_registered(uid)
+    if res is not None:
+        print("Carte déjà enregistrée ! Numéro " + str(res))
         return
 
     # charger l'état actuel (tolérant au fichier vide)
     try:
-        with open("data/cards.json", "r", encoding="utf-8") as f:
+        with open("../backend/data/cards.json", "r", encoding="utf-8") as f:
             content = f.read().strip()
             data = json.loads(content) if content else {"cards": []}
     except FileNotFoundError:
@@ -108,7 +113,7 @@ def register_new_card(uid):
     data.setdefault("cards", []).append(card_data)
 
     # réécriture complète (pas d'append de fragments JSON)
-    with open("data/cards.json", "w", encoding="utf-8") as f:
+    with open("../backend/data/cards.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 stop = threading.Event()

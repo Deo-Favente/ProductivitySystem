@@ -1,6 +1,6 @@
 {
   "meta": {
-    "nextId": 15,
+    "nextId": 2,
     "lastStartedId": 1
   },
   "todo": [],
@@ -8,90 +8,15 @@
   "done": [
     {
       "id": 1,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail",
-      "completedAt": "2025-08-28T00:16:54.323Z"
-    },
-    {
-      "id": 2,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail",
-      "completedAt": "2025-08-28T00:17:11.549Z"
-    },
-    {
-      "id": 3,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail",
-      "completedAt": "2025-08-28T00:17:43.323Z"
-    },
-    {
-      "id": 4,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail",
-      "completedAt": "2025-08-28T00:19:09.559Z  "
-    },
-    {
-      "id": 5,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail",
-      "completedAt": "2025-08-28T13:03:59.608Z"
-    },
-    {
-      "id": 6,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail",
-      "completedAt": "2025-08-28T13:04:09.683Z"
-    },
-    {
-      "id": 7,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail",
-      "completedAt": "2025-08-28T13:04:22.920Z"
-    },
-    {
-      "id": 8,
-      "title": "Nouvelle tache",
-      "subtitle": "Detail",
-      "completedAt": "2025-08-28T13:04:43.797Z"
-    },
-    {
-      "id": 9,
-      "title": "test",
-      "subtitle": "aaa",
-      "completedAt": "2025-08-28T13:05:53.543Z"
-    },
-    {
-      "id": 10,
-      "title": "test",
-      "subtitle": "test",
-      "completedAt": "2025-08-28T13:06:52.291Z"
-    },
-    {
-      "id": 11,
-      "title": "test",
-      "subtitle": "test",
-      "completedAt": "2025-08-28T13:07:25.558Z"
-    },
-    {
-      "id": 12,
       "title": "tes",
       "subtitle": "test",
-      "completedAt": "2025-08-28T13:09:45.237Z"
+      "completedAt": "2025-08-28T20:46:07.551Z"
     },
     {
-      "id": 13,
+      "id": 1,
       "title": "tes",
       "subtitle": "test",
-      "completedAt": "2025-08-28T13:09:55.565Z"
-    },
-    {
-      "id": 14,
-      "title": "tes",
-      "subtitle": "test",
-      "completedAt": "2025-08-28T13:10:55.662Z"
+      "completedAt": "2025-08-28T20:46:32.375Z"
     }
-  ],
-  "metrics": {
-    "amounts": []
-  }
+  ]
 }
