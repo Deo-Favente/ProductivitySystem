@@ -14,7 +14,7 @@ function notifyPaper() {
 }
 
 export async function loadAll() {
-  const res = await fetch(`${API}/tickets`);
+  const res = await fetch(`/tickets`);
   if (!res.ok) throw new Error(`GET /api/tickets -> ${res.status}`);
   const data = await res.json();
   todo.value  = data.todo  ?? [];
@@ -24,14 +24,14 @@ export async function loadAll() {
 }
 
 async function loadMeta() {
-  const res = await fetch(`${API}/meta`);
+  const res = await fetch(`/meta`);
   if (!res.ok) throw new Error(`GET /api/meta -> ${res.status}`);
   const data = await res.json();
   lastStartedId.value = data.lastStartedId ?? null;
 }
 
 async function addTicket({ title, subtitle, column = "todo" }) {
-  const res = await fetch(`${API}/tickets`, {
+  const res = await fetch(`/tickets`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title, subtitle, column })
@@ -42,7 +42,7 @@ async function addTicket({ title, subtitle, column = "todo" }) {
 }
 
 async function deleteTicket(id) {
-  const res = await fetch(`${API}/tickets/${id}`, { method: "DELETE" });
+  const res = await fetch(`/tickets/${id}`, { method: "DELETE" });
   if (!res.ok) throw new Error("Suppression échouée");
   for (const list of [todo, doing, done]) {
     const i = list.value.findIndex((t) => t.id === id);
@@ -53,7 +53,7 @@ async function deleteTicket(id) {
 }
 
 async function startTicket(id) {
-  const res = await fetch(`${API}/tickets/${id}/start`, { method: "POST" });
+  const res = await fetch(`/tickets/${id}/start`, { method: "POST" });
   if (!res.ok) throw new Error("Start échoué");
   const i = todo.value.findIndex(t => t.id === id);
   if (i !== -1) {
@@ -64,7 +64,7 @@ async function startTicket(id) {
 }
 
 async function completeTicket(id) {
-  const res = await fetch(`${API}/tickets/${id}/complete`, { method: "POST" });
+  const res = await fetch(`/tickets/${id}/complete`, { method: "POST" });
   if (!res.ok) throw new Error("Completion échouée");
   const i = doing.value.findIndex(t => t.id === id);
   if (i !== -1) {
