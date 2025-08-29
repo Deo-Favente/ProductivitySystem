@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <body>
+    <h1>OK iPad</h1>
+    <script nomodule>
+      // ES5 only
+      var r = new XMLHttpRequest();
+      r.open('GET', '/api/health', true);
+      r.onload = function(){ document.body.appendChild(document.createTextNode(' ' + r.status)); };
+      r.onerror = function(){ document.body.appendChild(document.createTextNode(' ERR')); };
+      r.send();
+    </script>
+  </body>
+</html>
+
