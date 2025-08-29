@@ -15,10 +15,8 @@ from smartcard.Exceptions import CardConnectionException, NoCardException
 API_BASE = "http://localhost/api"
 CARDS_PATH = Path("/opt/productivity/backend/data/cards.json")
 TICKETS_PATH = Path("/opt/productivity/backend/data/tickets.json")
-START_WAV   = Path(os.getenv("SOUND_START",   "/home/pi/sounds/start.wav"))
-COMPLETE_WAV= Path(os.getenv("SOUND_COMPLETE","/home/pi/sounds/complete.wav"))
-INFO_WAV    = Path(os.getenv("SOUND_INFO",    "/home/pi/sounds/info.wav"))
-
+START_WAV   = Path("/opt/productivity/frontend/public/start.wav")
+COMPLETE_WAV= Path("/opt/productivity/frontend/public/complete.wav")
 
 GET_UID_APDU = [0xFF, 0xCA, 0x00, 0x00, 0x00]
 STOP = threading.Event()
@@ -196,8 +194,6 @@ def main_loop():
             play(START_WAV)
         elif result == "complete":
             play(COMPLETE_WAV)
-        else:
-            play(INFO_WAV)
 
         last_uid = uid
         # attendre retrait avant nouveau tour (évite double déclenchement)
