@@ -27,4 +27,4 @@ __pycache__/
 scripts/.venv/*
 .env
 .env.production
-backend/data/*.json
+frontend/dist

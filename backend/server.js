@@ -232,5 +232,5 @@ app.post("/api/metrics/amount", async (req, res) => {
 });
 
 /* ------------------------------------------------------- */
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`API tickets → http://localhost:${PORT}`));
+const PORT = 3001;
+app.listen(PORT,'0.0.0.0', () => console.log(`API tickets → http://localhost:${PORT}`));
