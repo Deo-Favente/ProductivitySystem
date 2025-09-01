@@ -13,7 +13,6 @@ const { amount, growth, loadMetrics } = useMetrics();
 onMounted(async () => {
   // 1) brancher paper.js sur la vraie zone DOM
   setPaperZone(zoneVerte.value);
-  chargerPapier(500);
   // 2) charger les données ; le composable appellera char_papier(done.length)
   await Promise.all([loadAll(), loadMeta(), loadMetrics()]);
   setInterval(() => { loadAll(); loadMeta(), loadMetrics(); }, 5000);
