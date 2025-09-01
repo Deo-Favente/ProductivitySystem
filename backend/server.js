@@ -233,4 +233,6 @@ app.post("/api/metrics/amount", async (req, res) => {
 
 /* ------------------------------------------------------- */
 const PORT = 3001;
-app.listen(PORT,'0.0.0.0', () => console.log(`API tickets → http://localhost:${PORT}`));
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`API tickets → http://localhost:${PORT}`);
+});

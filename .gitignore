@@ -28,3 +28,4 @@ scripts/.venv/*
 .env
 .env.production
 frontend/dist
+backend/data/tickets.json
