@@ -5,12 +5,6 @@
   --color-orang: #F8D66D;
   --color-rouge: #FF6961;
 }
-
-:root {
-  --scroll-speed: 20s;
-  /* plus grand = plus lent */
-}
-
 .papier {
   position: absolute;
   width: var(--taille);
@@ -48,31 +42,44 @@ body {
   cursor: none;
 }
 
-:root {
-  /* durée d’un aller OU d’un retour */
-  --scroll-speed: 20s;
-}
-
-.conteneur-ticket {
-  overflow: hidden;
+.scroller {
   position: relative;
-  min-height: 0;
-  flex: 1 1 auto;
+  overflow: hidden;
+  /* Assurez-vous que le parent a une hauteur définie via votre layout */
 }
 
-/* pas d’animation côté CSS, tout est géré en JS */
-.scroll-loop {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.scroller__track,
+.scroller__clone {
   will-change: transform;
+  display: block;
 }
 
-/* Optionnel : commentaires ci-dessous
-   Les dégradés de masque peuvent désactiver l’accélération GPU sur Pi.
-   Si tu veux quand même un fondu, active-le plus tard en ajoutant la classe "use-fade" au container.
-*/
-.use-fade .scroll-loop {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
-          mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+.scroller__track {
+  animation-name: autoscroll-y;
+  animation-duration: var(--scroll-duration, 30s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: running;
+  transform: translate3d(0,0,0);
+}
+
+.scroller.is-paused .scroller__track {
+  animation-play-state: paused;
+}
+
+/* Le clone suit immédiatement pour rendre la boucle visuelle */
+.scroller__clone {
+  transform: translate3d(0, 0, 0);
+  margin-top: 0;
+}
+
+/* Animation: fait défiler la hauteur du contenu original */
+@keyframes autoscroll-y {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, var(--scroll-distance, -100%), 0); }
+}
+
+/* Accessibilité: pas d’animation si l’utilisateur préfère réduire */
+.scroller.reduced-motion .scroller__track {
+  animation: none !important;
 }
