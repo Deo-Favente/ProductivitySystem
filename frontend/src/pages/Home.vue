@@ -1,9 +1,10 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import Ticket from "../components/Ticket.vue";
-import { setPaperZone } from "../paper.js";
+import { setPaperZone } from "../lib/paper.js";
 import { useTickets } from "../composables/useTickets";
 import { useMetrics } from "../composables/useMetrics";
+import { chargerPapier } from "../lib/paper.js";
 
 const zoneVerte = ref(null);
 const { todo, doing, done, lastStartedId, loadAll, loadMeta, deleteTicket } = useTickets();
@@ -12,6 +13,7 @@ const { amount, growth, loadMetrics } = useMetrics();
 onMounted(async () => {
   // 1) brancher paper.js sur la vraie zone DOM
   setPaperZone(zoneVerte.value);
+  chargerPapier(500);
   // 2) charger les données ; le composable appellera char_papier(done.length)
   await Promise.all([loadAll(), loadMeta(), loadMetrics()]);
   setInterval(() => { loadAll(); loadMeta(), loadMetrics(); }, 5000);

@@ -1,6 +1,6 @@
 // src/composables/useTickets.js
 import { ref } from "vue";
-import { chargerPapier } from "../paper.js"; 
+import { chargerPapier } from "../lib/paper.js"; 
 
 const API = import.meta.env.VITE_API_BASE || "/api";
 const api = (path="") => `${API}${path.startsWith("/") ? path : `/${path}`}`;
