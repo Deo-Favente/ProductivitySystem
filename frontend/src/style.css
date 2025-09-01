@@ -38,3 +38,6 @@
           mask: var(--m);
 }
 
+body {
+  cursor: none;
+}

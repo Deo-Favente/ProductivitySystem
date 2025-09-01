@@ -1,65 +1,73 @@
 {
-  "todo": [],
-  "doing": [],
-  "done": [
+  "todo": [
     {
       "id": 1,
-      "title": "tes",
-      "subtitle": "test",
-      "completedAt": "2025-08-28T22:55:52.083Z"
+      "title": "Refaire les animations du dashboard",
+      "subtitle": "La raspberry est trop lente pour les afficher"
     },
     {
       "id": 2,
-      "title": "tes",
-      "subtitle": "test",
-      "completedAt": "2025-08-28T23:10:04.451Z"
+      "title": "Nettoyer le github du projet",
+      "subtitle": "Retirer les tokens et fichier degeu, faire de la doc, show of le truc"
     },
     {
       "id": 3,
-      "title": "tes",
-      "subtitle": "tes",
-      "completedAt": "2025-08-28T23:17:53.176Z"
+      "title": "Changer les sons du pannel",
+      "subtitle": "Le plus satisfaisant possible"
     },
     {
       "id": 4,
-      "title": "tes",
-      "subtitle": "tes",
-      "completedAt": "2025-08-28T23:25:28.803Z"
+      "title": "Faire les photos flowrush",
+      "subtitle": "De tous les pantalons"
     },
     {
       "id": 5,
-      "title": "tes",
-      "subtitle": "tes",
-      "completedAt": "2025-08-28T23:37:11.696Z"
+      "title": "Faire des tests de machine a coudre",
+      "subtitle": "De tous les pantalons"
     },
     {
       "id": 6,
-      "title": "tes",
-      "subtitle": "tes",
-      "completedAt": "2025-08-28T23:53:40.731Z"
+      "title": "Faire une page pour modifier les metrics",
+      "subtitle": "La money avec un formulaire à définir comment"
     },
     {
       "id": 7,
-      "title": "tes",
-      "subtitle": "tes",
-      "completedAt": "2025-08-28T23:55:43.292Z"
+      "title": "Ecrire des règles de taches sur la page",
+      "subtitle": "- Taches facilement mesurables \n- Decoupées\n…"
     },
     {
       "id": 8,
-      "title": "tes",
-      "subtitle": "tes",
-      "completedAt": "2025-08-29T00:09:14.461Z"
+      "title": "Corriger le calendrier",
+      "subtitle": "Plus petit affichage des heures + auto actualisation"
     },
     {
       "id": 9,
-      "title": "tes",
-      "subtitle": "tes",
-      "completedAt": "2025-08-29T00:15:03.527Z"
+      "title": "Preparer le fit de la rentrée",
+      "subtitle": "Outfit cartable"
+    },
+    {
+      "id": 10,
+      "title": "Preparer un système de note pour la rentrée",
+      "subtitle": "Bien organisé pour en faire le - possible"
+    },
+    {
+      "id": 11,
+      "title": "Imprimer des pieces en 3d pour le système",
+      "subtitle": "pour l’accrocher au skadis"
+    }
+  ],
+  "doing": [],
+  "done": [
+    {
+      "id": 9,
+      "title": "Un bisou pour ma copine",
+      "subtitle": "<3",
+      "completedAt": "2025-08-31T13:57:34.988Z"
     }
   ],
   "meta": {
-    "nextId": 10,
-    "lastStartedId": 1
+    "nextId": 12,
+    "lastStartedId": 3
   },
   "metrics": {
     "amounts": []
