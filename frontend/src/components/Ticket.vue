@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative bg-white flex flex-col w-90 items-center mt-5 rounded p-3 fond-ticket cursor-pointer select-none hover:shadow-md transition"
+    class="relative bg-white flex flex-col w-65 items-center mt-5 rounded p-3 fond-ticket cursor-pointer select-none hover:shadow-md transition"
     @click="toggleClose"
   >
     <!-- Croix = supprimer -->
