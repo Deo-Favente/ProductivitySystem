@@ -10,7 +10,8 @@ const zoneVerte = ref(null);
 const { todo, doing, done, lastStartedId, loadAll, loadMeta,
   deleteTicket } = useTickets();
 const { amount, growth, loadMetrics } = useMetrics();
-onMounted(async () => { // 1) brancher paper.js sur la vraie zone DOM setPaperZone(zoneVerte.value); // 2) charger les données ; le composable appellera char_papier(done.length) 
+onMounted(async () => { // 1) brancher paper.js sur la vraie zone DOM 
+  setPaperZone(zoneVerte.value); // 2) charger les données ; le composable appellera char_papier(done.length) 
   await Promise.all([loadAll(), loadMeta(), loadMetrics()]); setInterval(() => {
     loadAll(); loadMeta(), loadMetrics();
   }, 5000);
