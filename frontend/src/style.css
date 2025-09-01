@@ -6,6 +6,10 @@
     --color-rouge: #FF6961;
 }
 
+:root {
+  --scroll-speed: 20s; /* plus grand = plus lent */
+}
+
 .papier {
     position: absolute;
     width: var(--taille);
@@ -42,37 +46,40 @@ body {
   cursor: none;
 }
 
-/* Marquee vertical pur CSS */
-.marquee {
-  position: relative;
+:root {
+  --scroll-speed: 20s; /* durée d’un aller OU d’un retour */
+}
+
+.conteneur-ticket {
   overflow: hidden;
-  /* hauteur contrôlée par le parent; avec Tailwind garde flex-1 min-h-0 sur le conteneur */
+  position: relative;
+  min-height: 0;
+  flex: 1 1 auto;
 }
 
-.marquee__inner {
-  position: absolute;
-  inset: 0;
+.scroll-loop {
   display: flex;
   flex-direction: column;
-  align-items: center;      /* centre horizontalement les tickets */
-  row-gap: var(--gap, 8px); /* espace entre tickets */
+  gap: 0.75rem;
+  /* ping-pong continu */
+  animation: scrollY var(--scroll-speed) linear infinite alternate both;
   will-change: transform;
-  animation: marquee-down var(--duration, 20s) linear infinite;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
 }
 
-/* 2 groupes = 200% de contenu pour une boucle sans couture */
-.marquee__group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: var(--gap, 8px);
+/* pause manuelle au survol ? on peut garder ou retirer */
+.bg-rouge:hover .scroll-loop,
+.bg-orang:hover .scroll-loop {
+  animation-play-state: paused;
 }
 
-/* Pause au survol (optionnel) */
-.marquee:hover .marquee__inner { animation-play-state: paused; }
+/* Va de 0 à -50% (fin de la 1re liste), puis revient à 0 grâce à 'alternate' */
+@keyframes scrollY {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
 
-/* Sens : haut -> bas (translate Y positif) sur la moitié de la hauteur totale (200%) */
-@keyframes marquee-down {
-  from { transform: translateY(0%); }
-  to   { transform: translateY(50%); }
+@media (prefers-reduced-motion: reduce) {
+  .scroll-loop { animation: none; }
 }
