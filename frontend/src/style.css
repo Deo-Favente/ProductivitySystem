@@ -49,9 +49,8 @@ body {
 }
 
 :root {
-  --scroll-speed: 20s;
   /* durée d’un aller OU d’un retour */
-    --scroll-distance: 0px;
+  --scroll-speed: 20s;
 }
 
 .conteneur-ticket {
@@ -61,7 +60,7 @@ body {
   flex: 1 1 auto;
 }
 
-/* Par défaut : PAS d’animation */
+/* pas d’animation côté CSS, tout est géré en JS */
 .scroll-loop {
   display: flex;
   flex-direction: column;
@@ -69,30 +68,11 @@ body {
   will-change: transform;
 }
 
-/* On n’anime que si le parent porte .is-scrollable */
-.is-scrollable .scroll-loop {
-  animation: scrollY var(--scroll-speed) linear infinite alternate both;
-}
-
-.bg-rouge:hover .scroll-loop,
-.bg-orang:hover .scroll-loop {
-  animation-play-state: paused;
-  /* optionnel */
-}
-
-/* Va de 0 à la distance nécessaire, puis revient avec 'alternate' */
-@keyframes scrollY {
-  0% {
-    transform: translateY(0);
-  }
-
-  100% {
-    transform: translateY(var(--scroll-distance));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .is-scrollable .scroll-loop {
-    animation: none;
-  }
+/* Optionnel : commentaires ci-dessous
+   Les dégradés de masque peuvent désactiver l’accélération GPU sur Pi.
+   Si tu veux quand même un fondu, active-le plus tard en ajoutant la classe "use-fade" au container.
+*/
+.use-fade .scroll-loop {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
 }

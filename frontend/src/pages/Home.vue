@@ -14,25 +14,75 @@ const contDoing = ref(null);
 const loopTodo = ref(null);
 const loopDoing = ref(null);
 
-let ro1, ro2; // ResizeObserver
+// Instances d'animation WAAPI pour pouvoir pause/recreate
+let animTodo = null;
+let animDoing = null;
 
-function updateScroll(containerEl, loopEl) {
-  if (!containerEl || !loopEl) return;
-  const distance = loopEl.scrollHeight - containerEl.clientHeight;
-  if (distance > 0) {
-    containerEl.classList.add("is-scrollable");
-    // distance négative pour aller vers le haut
-    containerEl.style.setProperty("--scroll-distance", `${-distance}px`);
-  } else {
-    containerEl.classList.remove("is-scrollable");
-    containerEl.style.setProperty("--scroll-distance", `0px`);
-  }
+let ro; // ResizeObserver partagé (compatible Chromium récent – sinon on fallback)
+
+function makePingPong(containerEl, innerEl) {
+  // stop anim existante
+  const prev = innerEl.getAnimations ? innerEl.getAnimations() : [];
+  prev.forEach(a => a.cancel());
+
+  // accessibilité
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) return;
+
+  // calcul distance réelle à scroller
+  const distance = innerEl.scrollHeight - containerEl.clientHeight;
+  if (distance <= 0) return; // ne dépasse pas → pas d'animation
+
+  // Utilise translate3d pour forcer la composante GPU (utile sur Pi)
+  const keyframes = [
+    { transform: "translate3d(0, 0, 0)" },
+    { transform: `translate3d(0, ${-distance}px, 0)` },
+  ];
+
+  // Durée : convertit --scroll-speed (CSS) en ms ; fallback 50s
+  const styleSpeed = getComputedStyle(document.documentElement).getPropertyValue("--scroll-speed").trim();
+  // parse “50s” → 50
+  const seconds = styleSpeed.endsWith("s") ? parseFloat(styleSpeed) : 50;
+  const duration = seconds * 1000;
+
+  const anim = innerEl.animate(keyframes, {
+    duration,
+    iterations: Infinity,
+    direction: "alternate",
+    easing: "linear",
+    fill: "both",
+  });
+
+  // pause au survol
+  const onEnter = () => anim.pause();
+  const onLeave = () => anim.play();
+  containerEl.addEventListener("mouseenter", onEnter);
+  containerEl.addEventListener("mouseleave", onLeave);
+
+  // Nettoyage quand l’animation se recrée
+  anim.onfinish = () => {
+    containerEl.removeEventListener("mouseenter", onEnter);
+    containerEl.removeEventListener("mouseleave", onLeave);
+  };
+
+  return anim;
+}
+
+async function recalcOne(containerRef, innerRef, storeSetter) {
+  await nextTick();
+  const c = containerRef.value;
+  const i = innerRef.value;
+  if (!c || !i) return;
+
+  // (re)crée l'animation
+  const anim = makePingPong(c, i);
+  storeSetter(anim || null);
 }
 
 async function recalcAll() {
   await nextTick();
-  updateScroll(contTodo.value, loopTodo.value);
-  updateScroll(contDoing.value, loopDoing.value);
+  await recalcOne(contTodo,  loopTodo,  a => animTodo  = a);
+  await recalcOne(contDoing, loopDoing, a => animDoing = a);
 }
 
 onMounted(async () => {
@@ -40,28 +90,33 @@ onMounted(async () => {
   await Promise.all([loadAll(), loadMeta(), loadMetrics()]);
   setInterval(() => { loadAll(); loadMeta(); loadMetrics(); }, 5000);
 
-  // Observe redimensionnements containers + contenu
-  ro1 = new ResizeObserver(recalcAll);
-  ro2 = new ResizeObserver(recalcAll);
-  if (contTodo.value) ro1.observe(contTodo.value);
-  if (loopTodo.value) ro1.observe(loopTodo.value);
-  if (contDoing.value) ro2.observe(contDoing.value);
-  if (loopDoing.value) ro2.observe(loopDoing.value);
+  // ResizeObserver pour recalculer à la volée
+  if ("ResizeObserver" in window) {
+    ro = new ResizeObserver(() => { recalcAll(); });
+    contTodo.value && ro.observe(contTodo.value);
+    loopTodo.value && ro.observe(loopTodo.value);
+    contDoing.value && ro.observe(contDoing.value);
+    loopDoing.value && ro.observe(loopDoing.value);
+  } else {
+    // Fallback Pi très ancien : recalc sur resize
+    window.addEventListener("resize", recalcAll);
+  }
 
-  // Recacule au resize fenêtre
-  window.addEventListener("resize", recalcAll);
-
-  // 1er calcul après montage
+  // 1er passage
   recalcAll();
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("resize", recalcAll);
-  ro1?.disconnect();
-  ro2?.disconnect();
+  if (ro) ro.disconnect();
+  else window.removeEventListener("resize", recalcAll);
+
+  // Cancel propre
+  try { animTodo?.cancel(); } catch {}
+  try { animDoing?.cancel(); } catch {}
 });
 
-watch([todo, doing], recalcAll, { deep: true });
+// Recalcule quand le contenu change
+watch([todo, doing], () => recalcAll(), { deep: true });
 
 function handleRemove(id) { deleteTicket(id).catch(console.error); }
 </script>
