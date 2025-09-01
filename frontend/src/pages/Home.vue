@@ -29,7 +29,7 @@ onMounted(async () => { // 1) brancher paper.js sur la vraie zone DOM
       </div> <!-- En Cours -->
       <div class="bg-orang rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
         <h1 class="mt-3 text-2xl">En cours</h1>
-        <div class="conteneur-ticket w-full flex flex-col items-center" v-autoscroll="{ speed: 10 }">
+        <div class="conteneur-ticket w-full flex flex-col items-center">
           <Ticket v-for="t in doing" :key="t.id" v-bind="t" @remove="handleRemove" />
         </div>
       </div>
