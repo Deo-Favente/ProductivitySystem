@@ -15,7 +15,7 @@
 }
 
 .conteneur-ticket {
-  overflow: scroll;
+  overflow: hidden;
 }
 
 .conteneur-ticket::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar {
@@ -40,4 +40,39 @@
 
 body {
   cursor: none;
+}
+
+/* Marquee vertical pur CSS */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  /* hauteur contrôlée par le parent; avec Tailwind garde flex-1 min-h-0 sur le conteneur */
+}
+
+.marquee__inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* centre horizontalement les tickets */
+  row-gap: var(--gap, 8px); /* espace entre tickets */
+  will-change: transform;
+  animation: marquee-down var(--duration, 20s) linear infinite;
+}
+
+/* 2 groupes = 200% de contenu pour une boucle sans couture */
+.marquee__group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: var(--gap, 8px);
+}
+
+/* Pause au survol (optionnel) */
+.marquee:hover .marquee__inner { animation-play-state: paused; }
+
+/* Sens : haut -> bas (translate Y positif) sur la moitié de la hauteur totale (200%) */
+@keyframes marquee-down {
+  from { transform: translateY(0%); }
+  to   { transform: translateY(50%); }
 }

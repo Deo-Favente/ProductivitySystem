@@ -1,18 +1,21 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import Ticket from "../components/Ticket.vue";
 import { setPaperZone } from "../lib/paper.js";
 import { useTickets } from "../composables/useTickets";
 import { useMetrics } from "../composables/useMetrics";
-import { chargerPapier } from "../lib/paper.js";
 
 const zoneVerte = ref(null);
 const { todo, doing, done, lastStartedId, loadAll, loadMeta, deleteTicket } = useTickets();
 const { amount, growth, loadMetrics } = useMetrics();
 
+let stopRouge, stopOrange;
+
 onMounted(async () => {
+
   // 1) brancher paper.js sur la vraie zone DOM
   setPaperZone(zoneVerte.value);
+
   // 2) charger les données ; le composable appellera char_papier(done.length)
   await Promise.all([loadAll(), loadMeta(), loadMetrics()]);
   setInterval(() => { loadAll(); loadMeta(), loadMetrics(); }, 5000);
@@ -25,19 +28,49 @@ function handleRemove(id) { deleteTicket(id).catch(console.error); }
   <section class="h-[100dvh] box-border p-6 overflow-scroll no-scrollbar">
     <div class="grid sm:grid-cols-1 md:grid-cols-4 h-full min-h-0 gap-6">
 
-      <!-- À faire -->
+      <!-- À faire (rouge) -->
       <div class="bg-rouge rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
         <h1 class="mt-3 text-2xl">À faire</h1>
-        <div class="conteneur-ticket w-full flex flex-col items-center">
-          <Ticket v-for="t in todo" :key="t.id" v-bind="t" @remove="handleRemove" />
+
+        <div class="conteneur-ticket w-full flex-1 min-h-0 relative">
+          <div class="marquee" style="--gap:8px; --duration: 24s;">
+            <div class="marquee__inner">
+
+              <!-- 1ère copie -->
+              <div class="marquee__group">
+                <Ticket v-for="t in todo" :key="'todo-a-' + t.id" v-bind="t" @remove="handleRemove" />
+              </div>
+
+              <!-- 2ème copie (dupliquée) -->
+              <div class="marquee__group" aria-hidden="true">
+                <Ticket v-for="t in todo" :key="'todo-b-' + t.id" v-bind="t" />
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- En Cours -->
+      <!-- En cours (orange) -->
       <div class="bg-orang rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
         <h1 class="mt-3 text-2xl">En cours</h1>
-        <div class="conteneur-ticket w-full flex flex-col items-center">
-          <Ticket v-for="t in doing" :key="t.id" v-bind="t" @remove="handleRemove" />
+
+        <div class="conteneur-ticket w-full flex-1 min-h-0 relative">
+          <div class="marquee" style="--gap:8px; --duration: 26s;">
+            <div class="marquee__inner">
+
+              <!-- 1ère copie -->
+              <div class="marquee__group">
+                <Ticket v-for="t in doing" :key="'doing-a-' + t.id" v-bind="t" @remove="handleRemove" />
+              </div>
+
+              <!-- 2ème copie -->
+              <div class="marquee__group" aria-hidden="true">
+                <Ticket v-for="t in doing" :key="'doing-b-' + t.id" v-bind="t" />
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
 
