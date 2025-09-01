@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, onBeforeUnmount, watch, nextTick, ref } from "vue";
 import Ticket from "../components/Ticket.vue";
 import { setPaperZone } from "../lib/paper.js";
 import { useTickets } from "../composables/useTickets";
@@ -9,15 +9,61 @@ const zoneVerte = ref(null);
 const { todo, doing, done, lastStartedId, loadAll, loadMeta, deleteTicket } = useTickets();
 const { amount, growth, loadMetrics } = useMetrics();
 
+const contTodo = ref(null);
+const contDoing = ref(null);
+const loopTodo = ref(null);
+const loopDoing = ref(null);
+
+let ro1, ro2; // ResizeObserver
+
+function updateScroll(containerEl, loopEl) {
+  if (!containerEl || !loopEl) return;
+  const distance = loopEl.scrollHeight - containerEl.clientHeight;
+  if (distance > 0) {
+    containerEl.classList.add("is-scrollable");
+    // distance négative pour aller vers le haut
+    containerEl.style.setProperty("--scroll-distance", `${-distance}px`);
+  } else {
+    containerEl.classList.remove("is-scrollable");
+    containerEl.style.setProperty("--scroll-distance", `0px`);
+  }
+}
+
+async function recalcAll() {
+  await nextTick();
+  updateScroll(contTodo.value, loopTodo.value);
+  updateScroll(contDoing.value, loopDoing.value);
+}
+
 onMounted(async () => {
-  // 1) brancher paper.js sur la vraie zone DOM 
   setPaperZone(zoneVerte.value);
-  // 2) charger les données ; le composable appellera char_papier(done.length) 
   await Promise.all([loadAll(), loadMeta(), loadMetrics()]);
-  setInterval(() => { loadAll(); loadMeta(), loadMetrics(); }, 5000);
+  setInterval(() => { loadAll(); loadMeta(); loadMetrics(); }, 5000);
+
+  // Observe redimensionnements containers + contenu
+  ro1 = new ResizeObserver(recalcAll);
+  ro2 = new ResizeObserver(recalcAll);
+  if (contTodo.value) ro1.observe(contTodo.value);
+  if (loopTodo.value) ro1.observe(loopTodo.value);
+  if (contDoing.value) ro2.observe(contDoing.value);
+  if (loopDoing.value) ro2.observe(loopDoing.value);
+
+  // Recacule au resize fenêtre
+  window.addEventListener("resize", recalcAll);
+
+  // 1er calcul après montage
+  recalcAll();
 });
 
-function handleRemove(id) { deleteTicket(id).catch(console.error); } 
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", recalcAll);
+  ro1?.disconnect();
+  ro2?.disconnect();
+});
+
+watch([todo, doing], recalcAll, { deep: true });
+
+function handleRemove(id) { deleteTicket(id).catch(console.error); }
 </script>
 
 <template>
@@ -26,29 +72,24 @@ function handleRemove(id) { deleteTicket(id).catch(console.error); }
       <!-- À faire (ROUGE) -->
       <div class="bg-rouge rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
         <h1 class="mt-3 text-2xl">À faire</h1>
-        <div class="conteneur-ticket w-full flex flex-col items-center">
-          <div class="scroll-loop w-full items-center">
-            <!-- Liste 1 -->
-            <Ticket v-for="t in todo" :key="`todo-1-${t.id}`" v-bind="t" @remove="handleRemove" />
-            <!-- Liste 2 (duplication pour la boucle) -->
-            <Ticket v-for="t in todo" :key="`todo-2-${t.id}`" v-bind="t" @remove="handleRemove" />
+        <div ref="contTodo" class="conteneur-ticket w-full flex flex-col items-center">
+          <div ref="loopTodo" class="scroll-loop w-full items-center">
+            <Ticket v-for="t in todo" :key="t.id" v-bind="t" @remove="handleRemove" />
           </div>
         </div>
       </div>
 
       <!-- En cours (ORANGE) -->
+      <!-- En cours (ORANGE) -->
       <div class="bg-orang rounded-xl flex flex-col items-center text-gray-700 text-xl font-bold min-h-0">
         <h1 class="mt-3 text-2xl">En cours</h1>
-        <div class="conteneur-ticket w-full flex flex-col items-center">
-          <div class="scroll-loop w-full items-center">
-            <!-- Liste 1 -->
-            <Ticket v-for="t in doing" :key="`doing-1-${t.id}`" v-bind="t" @remove="handleRemove" />
-            <!-- Liste 2 (duplication pour la boucle) -->
-            <Ticket v-for="t in doing" :key="`doing-2-${t.id}`" v-bind="t" @remove="handleRemove" />
+        <div ref="contDoing" class="conteneur-ticket w-full flex flex-col items-center">
+          <div ref="loopDoing" class="scroll-loop w-full items-center">
+            <Ticket v-for="t in doing" :key="t.id" v-bind="t" @remove="handleRemove" />
           </div>
         </div>
       </div>
-      
+
       <div id="zone-verte" ref="zoneVerte"
         class="hidden bg-vert rounded-xl items-start justify-center text-gray-700 text-xl font-bold min-h-[260px] overflow-hidden md:flex">
         <h1 class="mt-3 text-2xl">Terminé ({{ done.length }})</h1>

@@ -1,45 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-    --color-vert: #8CD47E;
-    --color-orang: #F8D66D;
-    --color-rouge: #FF6961;
+  --color-vert: #8CD47E;
+  --color-orang: #F8D66D;
+  --color-rouge: #FF6961;
 }
 
 :root {
-  --scroll-speed: 20s; /* plus grand = plus lent */
+  --scroll-speed: 20s;
+  /* plus grand = plus lent */
 }
 
 .papier {
-    position: absolute;
-    width: var(--taille);
-    height: var(--taille);
-    background: url("/boule-papier.png");
-    background-size: cover;
+  position: absolute;
+  width: var(--taille);
+  height: var(--taille);
+  background: url("/boule-papier.png");
+  background-size: cover;
 }
 
 .conteneur-ticket {
   overflow: hidden;
 }
 
-.conteneur-ticket::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar {
+.conteneur-ticket::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
 .bg-vert {
-    position: relative;
-    /* pour contenir le papier */
-    overflow: hidden;
+  position: relative;
+  /* pour contenir le papier */
+  overflow: hidden;
 }
 
 .fond-ticket {
   background: url("/texture-papier.jpg");
   background-size: cover;
   --m:
-    conic-gradient(from   45deg at left,  #0000,#000 1deg 89deg,#0000 90deg) left /51% 10px repeat-y,
-    conic-gradient(from -135deg at right, #0000,#000 1deg 89deg,#0000 90deg) right/51% 10px repeat-y;
+    conic-gradient(from 45deg at left, #0000, #000 1deg 89deg, #0000 90deg) left /51% 10px repeat-y,
+    conic-gradient(from -135deg at right, #0000, #000 1deg 89deg, #0000 90deg) right/51% 10px repeat-y;
   -webkit-mask: var(--m);
-          mask: var(--m);
+  mask: var(--m);
 }
 
 body {
@@ -47,7 +49,9 @@ body {
 }
 
 :root {
-  --scroll-speed: 20s; /* durée d’un aller OU d’un retour */
+  --scroll-speed: 20s;
+  /* durée d’un aller OU d’un retour */
+    --scroll-distance: 0px;
 }
 
 .conteneur-ticket {
@@ -57,29 +61,38 @@ body {
   flex: 1 1 auto;
 }
 
+/* Par défaut : PAS d’animation */
 .scroll-loop {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  /* ping-pong continu */
-  animation: scrollY var(--scroll-speed) linear infinite alternate both;
   will-change: transform;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
-          mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
 }
 
-/* pause manuelle au survol ? on peut garder ou retirer */
+/* On n’anime que si le parent porte .is-scrollable */
+.is-scrollable .scroll-loop {
+  animation: scrollY var(--scroll-speed) linear infinite alternate both;
+}
+
 .bg-rouge:hover .scroll-loop,
 .bg-orang:hover .scroll-loop {
   animation-play-state: paused;
+  /* optionnel */
 }
 
-/* Va de 0 à -50% (fin de la 1re liste), puis revient à 0 grâce à 'alternate' */
+/* Va de 0 à la distance nécessaire, puis revient avec 'alternate' */
 @keyframes scrollY {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(var(--scroll-distance));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scroll-loop { animation: none; }
+  .is-scrollable .scroll-loop {
+    animation: none;
+  }
 }
