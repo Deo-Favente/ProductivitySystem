@@ -32,7 +32,8 @@ async function loadMeta() {
   lastStartedId.value = data.lastStartedId ?? null;
 }
 
-async function addTicket({ title, subtitle, column = "todo" }) {
+async function addTicket({ title, subtitle = "", column = "todo" }) {
+  if (subtitle.trim().length > 0) payload.subtitle = subtitle;
   const res = await fetch(api(`/tickets`), {
     method: "POST",
     headers: { "Content-Type": "application/json" },

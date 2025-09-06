@@ -123,8 +123,8 @@ app.get("/api/tickets", async (_req, res) => {
 
 // POST /api/tickets { title, subtitle, column? }
 app.post("/api/tickets", async (req, res) => {
-  const { title, subtitle, column = "todo" } = req.body || {};
-  if (!title || !subtitle) return res.status(400).json({ error: "title et subtitle requis" });
+  const { title, subtitle = "", column = "todo" } = req.body || {};
+  if (!title) return res.status(400).json({ error: "title et subtitle requis" });
 
   let created = null;
   await withDB((db) => {
