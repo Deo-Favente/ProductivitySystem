@@ -24,7 +24,8 @@ dist-ssr
 *.sw?
 
 __pycache__/
-scripts/.venv/*
+scripts/.venv/
+.venv/
 .env
 .env.production
 frontend/dist
