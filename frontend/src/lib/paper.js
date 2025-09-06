@@ -105,7 +105,6 @@ function animate() {
 export function chargerPapier(n) {
   if (!zoneEl) throw new Error("[paper] setPaperZone doit être appelé avant");
 
-  n = 1000;
   setSizeForCount(n);
 
   while (papiers.length < n) createPaper();
