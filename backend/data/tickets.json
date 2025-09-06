@@ -2,72 +2,125 @@
   "todo": [
     {
       "id": 1,
-      "title": "Refaire les animations du dashboard",
-      "subtitle": "La raspberry est trop lente pour les afficher"
-    },
-    {
-      "id": 2,
       "title": "Nettoyer le github du projet",
       "subtitle": "Retirer les tokens et fichier degeu, faire de la doc, show of le truc"
     },
     {
-      "id": 3,
-      "title": "Changer les sons du pannel",
-      "subtitle": "Le plus satisfaisant possible"
-    },
-    {
-      "id": 4,
+      "id": 2,
       "title": "Faire les photos flowrush",
       "subtitle": "De tous les pantalons"
     },
     {
-      "id": 5,
-      "title": "Faire des tests de machine a coudre",
-      "subtitle": "De tous les pantalons"
-    },
-    {
-      "id": 6,
+      "id": 3,
       "title": "Faire une page pour modifier les metrics",
       "subtitle": "La money avec un formulaire à définir comment"
     },
     {
-      "id": 7,
-      "title": "Ecrire des règles de taches sur la page",
-      "subtitle": "- Taches facilement mesurables \n- Decoupées\n…"
+      "id": 6,
+      "title": "Corriger la taille des papiers",
+      "subtitle": "Sur l’animation"
     },
     {
-      "id": 8,
+      "id": 10,
+      "title": "Faire un plan de contenu",
+      "subtitle": "Court ? Long ? Cagoule ? Yt ? Flowrush ? Dev ?"
+    },
+    {
+      "id": 11,
+      "title": "Ranger le bureau",
+      "subtitle": "Les trucs a archiver ect"
+    },
+    {
+      "id": 9,
+      "title": "Reprendre le projet schedule",
+      "subtitle": "finir la créa, coder"
+    },
+    {
+      "id": 14,
+      "title": "#7 Faire une copie du disque dur",
+      "subtitle": "Transferer trucs importants et reset ?"
+    },
+    {
+      "id": 7,
+      "title": "#8 Revoir les articles qui stagnent flowrush",
+      "subtitle": "Et trouver quoi en faire"
+    }
+  ],
+  "doing": [
+    {
+      "id": 12,
+      "title": "Imprimer des pieces en 3d pour le système",
+      "subtitle": "pour l’accrocher au skadis"
+    },
+    {
+      "id": 13,
+      "title": "Faire des tests de machine a coudre",
+      "subtitle": "De tous les pantalons"
+    },
+    {
+      "id": 5,
       "title": "Corriger le calendrier",
       "subtitle": "Plus petit affichage des heures + auto actualisation"
     },
     {
-      "id": 9,
-      "title": "Preparer le fit de la rentrée",
-      "subtitle": "Outfit cartable"
-    },
-    {
-      "id": 10,
-      "title": "Preparer un système de note pour la rentrée",
-      "subtitle": "Bien organisé pour en faire le - possible"
-    },
-    {
-      "id": 11,
-      "title": "Imprimer des pieces en 3d pour le système",
-      "subtitle": "pour l’accrocher au skadis"
+      "id": 4,
+      "title": "Ecrire des règles de taches sur la page",
+      "subtitle": "- Taches facilement mesurables \n- Decoupées\n…"
     }
   ],
-  "doing": [],
   "done": [
     {
-      "id": 9,
+      "id": 14,
       "title": "Un bisou pour ma copine",
       "subtitle": "<3",
       "completedAt": "2025-08-31T13:57:34.988Z"
+    },
+    {
+      "id": 15,
+      "title": "Corriger le layout",
+      "subtitle": "Animer pour que tout soit lisible",
+      "completedAt": "2025-09-01T21:51:21.458Z"
+    },
+    {
+      "id": 16,
+      "title": "Changer les sons du pannel",
+      "subtitle": "Le plus satisfaisant possible",
+      "completedAt": "2025-09-01T21:58:48.697Z"
+    },
+    {
+      "id": 17,
+      "title": "Trouver un haut parleur",
+      "subtitle": "Pour les sons du système",
+      "completedAt": "2025-09-01T22:01:58.658Z"
+    },
+    {
+      "id": 18,
+      "title": "Refaire les animations du dashboard",
+      "subtitle": "La raspberry est trop lente pour les afficher",
+      "completedAt": "2025-09-01T22:03:05.640Z"
+    },
+    {
+      "id": 19,
+      "title": "Preparer le fit de la rentrée",
+      "subtitle": "Outfit cartable",
+      "completedAt": "2025-09-02T23:51:54.574Z"
+    },
+    {
+      "id": 20,
+      "title": "Preparer un système de note pour la rentrée",
+      "subtitle": "Bien organisé pour en faire le - possible",
+      "completedAt": "2025-09-03T22:33:28.674Z"
+    },
+    {
+      "id": 9,
+      "title": "Rendre la description des tâches pas obligatoire",
+      "subtitle": "pcq c chiant",
+      "completedAt": "2025-09-06T20:52:54.581Z"
     }
   ],
   "meta": {
-    "nextId": 12,
-    "lastStartedId": 3
+    "nextId": 8,
+    "lastStartedId": 4
   },
   "metrics": {
     "amounts": []
