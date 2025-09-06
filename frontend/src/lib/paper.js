@@ -27,6 +27,7 @@ function setSizeForCount(n) {
 }
 
 function createPaper() {
+  setSizeForCount(papiers.length + 1);
   const { width, height } = getZoneSize();
   const maxHeight = height * 0.5;
   const maxPerColumn = Math.max(1, Math.floor(maxHeight / taillePapier));
