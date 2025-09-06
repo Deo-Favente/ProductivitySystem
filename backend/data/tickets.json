@@ -16,54 +16,54 @@
       "subtitle": "La money avec un formulaire à définir comment"
     },
     {
-      "id": 6,
+      "id": 4,
       "title": "Corriger la taille des papiers",
       "subtitle": "Sur l’animation"
     },
     {
-      "id": 10,
+      "id": 5,
       "title": "Faire un plan de contenu",
       "subtitle": "Court ? Long ? Cagoule ? Yt ? Flowrush ? Dev ?"
     },
     {
-      "id": 11,
+      "id": 6,
       "title": "Ranger le bureau",
       "subtitle": "Les trucs a archiver ect"
     },
     {
-      "id": 9,
+      "id": 7,
       "title": "Reprendre le projet schedule",
       "subtitle": "finir la créa, coder"
     },
     {
-      "id": 14,
+      "id": 8,
       "title": "#7 Faire une copie du disque dur",
       "subtitle": "Transferer trucs importants et reset ?"
     },
     {
-      "id": 7,
+      "id": 9,
       "title": "#8 Revoir les articles qui stagnent flowrush",
       "subtitle": "Et trouver quoi en faire"
     }
   ],
   "doing": [
     {
-      "id": 12,
+      "id": 10,
       "title": "Imprimer des pieces en 3d pour le système",
       "subtitle": "pour l’accrocher au skadis"
     },
     {
-      "id": 13,
+      "id": 11,
       "title": "Faire des tests de machine a coudre",
       "subtitle": "De tous les pantalons"
     },
     {
-      "id": 5,
+      "id": 12,
       "title": "Corriger le calendrier",
       "subtitle": "Plus petit affichage des heures + auto actualisation"
     },
     {
-      "id": 4,
+      "id": 13,
       "title": "Ecrire des règles de taches sur la page",
       "subtitle": "- Taches facilement mesurables \n- Decoupées\n…"
     }
@@ -112,20 +112,15 @@
       "completedAt": "2025-09-03T22:33:28.674Z"
     },
     {
-      "id": 9,
+      "id": 21,
       "title": "Rendre la description des tâches pas obligatoire",
       "subtitle": "pcq c chiant",
       "completedAt": "2025-09-06T20:52:54.581Z"
     }
   ],
   "meta": {
-<<<<<<< HEAD
-    "nextId": 8,
+    "nextId": 22,
     "lastStartedId": 4
-=======
-    "nextId": 15,
-    "lastStartedId": 3
->>>>>>> d344410d02b6f6df7647884d7d3688c7ffc86604
   },
   "metrics": {
     "amounts": []

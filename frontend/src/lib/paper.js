@@ -22,18 +22,21 @@ function getZoneSize() {
 }
 
 function setSizeForCount(n) {
-  taillePapier = 200 / Math.cbrt(Math.max(1, n));
+    const { width, height } = getZoneSize();
+    const maxHeight = height * 0.5;
+    // Faire en sorte que la zone width * maxHeight soit remplie de n carrés
+    const areaPerPaper = (width * maxHeight) / n;
+    taillePapier = Math.floor(Math.sqrt(areaPerPaper));
   document.documentElement.style.setProperty("--taille", `${taillePapier}px`);
 }
 
 function createPaper() {
-  setSizeForCount(papiers.length + 1);
   const { width, height } = getZoneSize();
   const maxHeight = height * 0.5;
   const maxPerColumn = Math.max(1, Math.floor(maxHeight / taillePapier));
 
   // Combien de colonnes max tiennent dans la zone ?
-  const maxCols = Math.max(1, Math.floor(width / (taillePapier) + 1));
+  const maxCols = Math.max(1, Math.floor((width) / (taillePapier)));
 
   // colonne choisie en fonction de l’index
   const colIndex = Math.floor(papiers.length / maxPerColumn);
@@ -41,7 +44,6 @@ function createPaper() {
 
   // position X bien alignée dans la largeur
   const x = usedCol * taillePapier / 2;
-
   const y = -taillePapier;
 
   const div = document.createElement("div");
@@ -103,6 +105,7 @@ function animate() {
 export function chargerPapier(n) {
   if (!zoneEl) throw new Error("[paper] setPaperZone doit être appelé avant");
 
+  n = 1000;
   setSizeForCount(n);
 
   while (papiers.length < n) createPaper();
