@@ -119,8 +119,13 @@
     }
   ],
   "meta": {
+<<<<<<< HEAD
     "nextId": 8,
     "lastStartedId": 4
+=======
+    "nextId": 15,
+    "lastStartedId": 3
+>>>>>>> d344410d02b6f6df7647884d7d3688c7ffc86604
   },
   "metrics": {
     "amounts": []

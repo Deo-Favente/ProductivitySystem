@@ -6,6 +6,7 @@ import { setPaperZone } from
 import { useTickets } from "../composables/useTickets";
 import { useMetrics } from
   "../composables/useMetrics";
+
 const zoneVerte = ref(null);
 const { todo, doing, done, lastStartedId, loadAll, loadMeta,
   deleteTicket } = useTickets();
@@ -52,7 +53,8 @@ onMounted(async () => { // 1) brancher paper.js sur la vraie zone DOM
         </div>
         <div class="flex flex-col min-h-0 w-full">
           <div class="flex items-center font-bold text-[clamp(1rem,3vw,2rem)] w-full">
-            <div id="agenda-app" class="w-full"></div>
+            <div id="agenda-app" class="w-full">
+            </div>
           </div>
         </div>
       </div>

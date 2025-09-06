@@ -1,0 +1,17 @@
+{
+  "name": "productivitysystem",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\""
+  },
+  "author": "Deo-Favente",
+  "license": "ISC",
+  "description": "A productivity system to manage tasks and projects",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deo-Favente/productivitysystem.git"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 const events = ref([]);
 const loading = ref(true);
@@ -7,16 +7,17 @@ const loading = ref(true);
 const API_KEY = import.meta.env.VITE_API_KEY;
 const CALENDAR_ID = import.meta.env.VITE_CALENDAR_ID;
 const MAX_RESULTS = 5;
+let intervalId = null;
 
-onMounted(async () => {
+async function loadEvents() {
+  loading.value = true;
   try {
     const now = new Date().toISOString();
     const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}&timeMin=${now}&singleEvents=true&orderBy=startTime&maxResults=${MAX_RESULTS}`;
-
     const res = await fetch(url);
     const data = await res.json();
 
-    events.value = data.items.map(ev => ({
+    events.value = (data.items || []).map(ev => ({
       id: ev.id,
       title: ev.summary,
       start: ev.start.dateTime || ev.start.date,
@@ -28,6 +29,15 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
+}
+
+onMounted(() => {
+  loadEvents(); // premier chargement immédiat
+  intervalId = setInterval(loadEvents, 30_000); // toutes les 30s
+});
+
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId);
 });
 </script>
 
@@ -49,9 +59,12 @@ onMounted(async () => {
         </thead>
         <tbody>
           <tr v-for="event in events" :key="event.id" class="hover:bg-gray-50">
-            <td class="text-xs border-b border-gray-200 font-medium text-center text-wrap max-w-xs">{{ event.title }}</td>
-            <td class="text-xs border-b border-gray-200 text-wrap text-center">{{ new Date(event.start).toLocaleString("fr-FR") }}</td>
-            <td class="text-xs border-b border-gray-200 text-wrap text-center">{{ new Date(event.end).toLocaleString("fr-FR") }}</td>
+            <td class="text-xs border-b border-gray-200 font-medium text-center text-wrap max-w-xs">{{ event.title }}
+            </td>
+            <td class="text-xs border-b border-gray-200 text-wrap text-center">{{ new
+              Date(event.start).toLocaleDateString("fr-FR", {"hour": '2-digit', "minute": '2-digit'}) }}</td>
+            <td class="text-xs border-b border-gray-200 text-wrap text-center">{{ new
+              Date(event.end).toLocaleDateString("fr-FR", {"hour": '2-digit', "minute": '2-digit'}) }}</td>
             <td class="text-xs border-b border-gray-200 max-w-xs text-wrap text-center">{{ event.location }}</td>
           </tr>
         </tbody>

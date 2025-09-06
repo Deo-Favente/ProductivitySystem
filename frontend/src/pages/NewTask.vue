@@ -1,9 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
 import { useTickets } from "../composables/useTickets";
 
-const router = useRouter();
 const { addTicket } = useTickets();
 
 const title = ref("");
@@ -13,7 +11,7 @@ const loading = ref(false);
 const errorMsg = ref("");
 
 const canSubmit = computed(() =>
-  title.value.trim().length >= 2 && subtitle.value.trim().length >= 1 && !loading.value
+  title.value.trim().length >= 2 && !loading.value
 );
 
 async function submit() {
@@ -26,12 +24,13 @@ async function submit() {
       subtitle: subtitle.value.trim(),
       column: column.value
     });
-    // Afficher un message de succès
+    
     alert("Tâche créée avec succès !");
   } catch (e) {
     errorMsg.value = "Échec de la création. Réessaie.";
     console.error(e);
   } finally {
+        // Afficher un message de succès
     loading.value = false;
   }
 }
@@ -68,6 +67,7 @@ async function submit() {
           id="subtitle"
           rows="4"
           placeholder="Détaille ce qu'il faut faire…"
+          
           class="mt-1 w-full rounded-2xl border border-gray-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
           v-model="subtitle"
         />
@@ -88,6 +88,17 @@ async function submit() {
           </label>
         </div>
       </fieldset>
+
+      <!-- Instructions pour remplir -->
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+          <strong class="font-medium text-yellow-800">Instructions</strong><br>
+          <ul class="list-disc list-inside mt-1 space-y-1 text-yellow-800 text-sm">
+            <li> <strong>Les tâches non liées au travail</strong> (vie perso) vont dans l'<strong>appli mobile</strong>.</li>
+            <li> <strong>Les rendez-vous non déplaçables, habituels</strong> (ex: cours) ou ponctuels (ex: psy, médecin) <strong>vont dans le calendrier.</strong></li>
+            <li> Une tâche doit être <strong>claire, atomique, mesurable en résultats</strong> (fait / pas fait).</li>
+            <li> Il est conseillé de <strong>découper les grosses tâches</strong> en sous-tâches plus petites. Chaque ticket doit durer <strong>quelques heures maximum.</strong></li>
+           </ul>
+      </div>
 
       <p v-if="errorMsg" class="text-red-600 text-sm">{{ errorMsg }}</p>
 
