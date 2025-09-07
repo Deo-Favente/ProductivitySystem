@@ -1,3 +1,1 @@
-npm run build 
-\ rsync -a dist/ /var/www/productivity/
-\ systemctl restart nginx
+git pull && npm run build && rsync -a dist/ /var/www/productivity/ && sudo systemctl --user restart dashboard.service && sudo systemctl restart nginx.service
