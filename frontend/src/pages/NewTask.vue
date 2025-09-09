@@ -41,7 +41,7 @@ async function submit() {
     <!-- Header mobile -->
     <div class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-gray-200 flex justify-center">
       <div class="mx-auto max-w-md px-4 py-3 flex items-center gap-3">
-        <button @click="$router.back()" class="text-blue-600 font-medium">Retour</button>
+        <a class="text-blue-600 font-medium" href="/">Retour</a>
         <h1 class="text-lg font-semibold">Nouvelle tâche</h1>
       </div>
     </div>
