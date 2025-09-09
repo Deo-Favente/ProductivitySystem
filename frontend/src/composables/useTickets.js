@@ -33,12 +33,12 @@ async function loadMeta() {
 }
 
 async function addTicket({ title, subtitle = "", column = "todo" }) {
-  if (subtitle.trim().length > 0) payload.subtitle = subtitle;
   const res = await fetch(api(`/tickets`), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title, subtitle, column })
   });
+  console.log(res);
   if (!res.ok) throw new Error("Ajout échoué");
   const t = await res.json();
   (column === "todo" ? todo : column === "doing" ? doing : done).value.push(t);

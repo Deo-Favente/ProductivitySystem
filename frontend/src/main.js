@@ -2,10 +2,8 @@ import { createApp, nextTick } from "vue";
 import App from "./App.vue";
 import { router } from "./router";
 import Agenda from "./components/Agenda.vue";
-import autoScroll from "./directives/autoscroll.js";
 
 const app = createApp(App);
-app.directive('autoscroll', autoScroll);
 app.use(router);
 app.mount("#app");
 

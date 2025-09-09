@@ -14,7 +14,7 @@
 }
 
 .conteneur-ticket {
-  overflow: hidden;
+  overflow: auto;
 }
 
 .conteneur-ticket::-webkit-scrollbar,
@@ -42,44 +42,18 @@ body {
   cursor: none;
 }
 
-.scroller {
+.carousel {
   position: relative;
   overflow: hidden;
-  /* Assurez-vous que le parent a une hauteur définie via votre layout */
 }
 
-.scroller__track,
-.scroller__clone {
-  will-change: transform;
-  display: block;
+.autoscroll {
+  display: inline-block;
+  animation: scroll 20s linear infinite; /* durée ajustable */
 }
 
-.scroller__track {
-  animation-name: autoscroll-y;
-  animation-duration: var(--scroll-duration, 30s);
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-play-state: running;
-  transform: translate3d(0,0,0);
-}
-
-.scroller.is-paused .scroller__track {
-  animation-play-state: paused;
-}
-
-/* Le clone suit immédiatement pour rendre la boucle visuelle */
-.scroller__clone {
-  transform: translate3d(0, 0, 0);
-  margin-top: 0;
-}
-
-/* Animation: fait défiler la hauteur du contenu original */
-@keyframes autoscroll-y {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(0, var(--scroll-distance, -100%), 0); }
-}
-
-/* Accessibilité: pas d’animation si l’utilisateur préfère réduire */
-.scroller.reduced-motion .scroller__track {
-  animation: none !important;
+@keyframes scroll {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(calc(-100% + 700px)); } /* contenu monte jusqu’en bas */
+  100% { transform: translateY(0); }
 }
