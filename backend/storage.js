@@ -1,7 +1,7 @@
 /*
-  Nom : storage.js
-  Description : Gestion de la base de données (fichier JSON)
-  Auteur : Deo-Favente
+    Nom : storage.js
+    Description : Gestion de la base de données (fichier JSON)
+    Auteur : Deo-Favente
 */
 
 import { promises as fs } from "fs";
