@@ -22,6 +22,7 @@ await withDB((db) => {
 });
 
 /* ----------------------- Routes API ----------------------- */
+
 // GET /api/tickets
 app.get("/api/tickets", async (_req, res) => {
   /* Renvoyer les tickets dans les 3 colonnes */
@@ -75,7 +76,7 @@ app.delete("/api/tickets/:id", async (req, res) => {
   });
 
   if (!removed) return res.status(404).json({ error: "Ticket introuvable" });
-  res.json({ ok: true, removed }); 
+  res.json({ ok: true, removed });
 });
 
 // POST /api/tickets/:id/start
@@ -91,7 +92,7 @@ app.post("/api/tickets/:id/start", async (req, res) => {
     result = moveTicket(db, idNum, "doing");
     db.meta = db.meta ? db.meta : { nextId: 1, lastStartedId: null };
     db.meta.lastStartedId = idNum;
-    return { value: result }; 
+    return { value: result };
   });
 
   if (!result) return res.status(404).json({ error: "Ticket introuvable ou déjà en cours" });
