@@ -12,11 +12,11 @@ from smartcard.CardConnection import CardConnection
 from smartcard.Exceptions import CardConnectionException, NoCardException
 
 # ---------- Config ----------
-API_BASE = "http://192.168.1.89:3001/api"
-CARDS_PATH = Path("/home/pi/Desktop/ProductivitySystem/backend/data/cards.json")
-TICKETS_PATH = Path("/home/pi/Desktop/ProductivitySystem/backend/data/tickets.json")
-START_WAV   = Path("/home/pi/Desktop/ProductivitySystem/frontend/public/start.wav")
-COMPLETE_WAV= Path("/home/pi/Desktop/ProductivitySystem/frontend/public/complete.wav")
+API_BASE = os.getenv("API_BASE")
+CARDS_PATH = Path("data/cards.json")
+TICKETS_PATH = Path("data/tickets.json")
+START_WAV   = Path("audio/start.wav")
+COMPLETE_WAV= Path("audio/complete.wav")
 
 GET_UID_APDU = [0xFF, 0xCA, 0x00, 0x00, 0x00]
 STOP = threading.Event()
