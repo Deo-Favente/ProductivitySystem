@@ -1,12 +1,19 @@
+/*
+    Nom : utils.js
+    Description : Fonctions utilitaires pour la gestion des tickets
+    Auteur : Deo-Favente
+*/
+
+// Convertit une valeur en id numérique valide (1..50) ou null
 function toId(x) {
   const n = Number(x);
   return Number.isInteger(n) && n >= 1 && n <= 50 ? n : null;
 }
 
-// 👉 On EXCLUT 'done' pour libérer l'ID dès qu'un ticket est terminé
+// Collecte les ids utilisés dans "todo" et "doing"
 function collectUsedIds(db) {
   const used = new Set();
-  for (const col of ["todo", "doing"]) {   // <— seulement ces colonnes
+  for (const col of ["todo", "doing"]) {
     for (const t of db[col] || []) {
       const n = toId(t.id);
       if (n !== null) used.add(n);
@@ -15,9 +22,9 @@ function collectUsedIds(db) {
   return used;
 }
 
-/** Renvoie le plus petit ID libre (1..50), en ignorant 'done' */
+// Trouve un id libre entre 1 et 50, ou null si plein
 function nextFreeId(db) {
-  db.meta ??= { nextId: 1, lastStartedId: null };
+  db.meta = db.meta || { nextId: 1, lastStartedId: null };
   const used = collectUsedIds(db);
 
   for (let cand = 1; cand <= 50; cand++) {
@@ -28,18 +35,16 @@ function nextFreeId(db) {
       return cand;
     }
   }
-  return null; // plein: 50 tickets effectivement actifs (todo+doing)
+  return null; // plein, pas d'id libre
 }
 
-
-
-/** Migration: s'assurer que tous les tickets ont un id numérique unique 1..50 et initialiser nextId */
+// S'assure que tous les tickets ont un id numérique unique entre 1 et 50
 function migrateNumericIds(db) {
-  db.todo ??= [];
-  db.doing ??= [];
-  db.done ??= [];
-  db.meta ??= { nextId: 1, lastStartedId: null };
-  db.metrics ??= { amounts: [] };
+  db.todo = db.todo || [];
+  db.doing = db.doing || [];
+  db.done = db.done || [];
+  db.meta = db.meta || { nextId: 1, lastStartedId: null };
+  db.metrics = db.metrics || { amounts: [] };
 
   // Si tous les ids sont déjà valides et uniques dans 1..50, on se contente d'ajuster nextId
   const used = collectUsedIds(db);
@@ -73,7 +78,7 @@ function migrateNumericIds(db) {
   db.meta.nextId = (n % 50) + 1;
 }
 
-/** Trouver un ticket par id numérique */
+// Trouve un ticket par son id numérique
 function findTicket(db, idNum) {
   for (const col of ["todo", "doing", "done"]) {
     const idx = (db[col] || []).findIndex(t => t.id === idNum);
@@ -82,7 +87,7 @@ function findTicket(db, idNum) {
   return null;
 }
 
-/** Déplacer un ticket vers une autre colonne */
+// Déplace un ticket d'une colonne à une autre
 function moveTicket(db, idNum, to) {
   const found = findTicket(db, idNum);
   if (!found) return null;
@@ -93,6 +98,7 @@ function moveTicket(db, idNum, to) {
   return { from: col, to, ticket };
 }
 
+// Calcule les métriques de croissance
 function computeMetrics(metrics) {
   const arr = metrics?.amounts ?? [];
   const n = arr.length;
