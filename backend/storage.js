@@ -43,7 +43,7 @@ async function writeDB(db) {
   await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2), "utf8");
 }
 
-export function withDB(fn) {
+function withDB(fn) {
   // Sérialiser les accès en file d'attente
   // La fonction fn(db) est appelée avec la db lue, et peut retourner { value, persist (optionnel) }
   // Si persist !== false, la db est réécrite après l'appel
@@ -60,3 +60,5 @@ export function withDB(fn) {
   });
   return chain;
 }
+
+export { withDB };
