@@ -1,3 +1,9 @@
+/* 
+  Nom : paper.js
+  Description : Module pour gérer l'animation des papiers qui tombent
+  Auteur : Deo-Favente
+*/
+
 let zoneEl = null;
 const papiers = [];
 let animationFrame = null;
@@ -6,6 +12,7 @@ const GRAVITY = 0.8;
 const DAMPING = 0.3;
 
 export function setPaperZone(el) {
+  // Définir la zone où les papiers tombent
   zoneEl = el;
   if (!zoneEl) return;
   if (getComputedStyle(zoneEl).position === "static") {
@@ -14,6 +21,7 @@ export function setPaperZone(el) {
 }
 
 function getZoneSize() {
+  // Obtenir la taille de la zone 
   const rect = zoneEl.getBoundingClientRect();
   return {
     width: rect.width || 265,
@@ -22,6 +30,7 @@ function getZoneSize() {
 }
 
 function setSizeForCount(n) {
+    // Ajuster la taille des papiers en fonction du nombre n
     const { width, height } = getZoneSize();
     const maxHeight = height * 0.5;
     // Faire en sorte que la zone width * maxHeight soit remplie de n carrés
@@ -31,6 +40,7 @@ function setSizeForCount(n) {
 }
 
 function createPaper() {
+  // Créer un nouvel élément papier
   const { width, height } = getZoneSize();
   const maxHeight = height * 0.5;
   const maxPerColumn = Math.max(1, Math.floor(maxHeight / taillePapier));
@@ -67,6 +77,7 @@ function createPaper() {
 
 
 function animate() {
+  // Animation des papiers
   const { height } = getZoneSize();
   const maxHeight = height;
 
@@ -103,6 +114,7 @@ function animate() {
 }
 
 export function chargerPapier(n) {
+  // Ajuster le nombre de papiers à n
   if (!zoneEl) throw new Error("[paper] setPaperZone doit être appelé avant");
 
   setSizeForCount(n);
@@ -116,7 +128,8 @@ export function chargerPapier(n) {
   if (!animationFrame) animate();
 }
 
-export function reset_papiers() {
+export function resetPapier() {
+  // Tout enlever et arrêter l'animation
   cancelAnimationFrame(animationFrame);
   animationFrame = null;
   while (papiers.length) {
