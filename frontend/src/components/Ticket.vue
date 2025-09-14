@@ -1,3 +1,26 @@
+/*
+  Nom : Ticket.vue
+  Description : Composant affichant un ticket avec un titre, un sous-titre et une option pour le supprimer.
+  Auteur : Deo-Favente
+*/
+
+<script setup>
+import { ref } from "vue";
+
+const props = defineProps({
+  id: { type: [String, Number], required: true },
+  title: { type: String, required: true },
+  subtitle: { type: String, required: true },
+  no: { type: Number, default: null }
+});
+
+const emit = defineEmits(["remove"]);
+const showClose = ref(false);
+
+function toggleClose() { showClose.value = !showClose.value; }
+</script>
+
+
 <template>
   <div
     class="relative bg-white flex flex-col w-65 items-center mt-5 rounded p-3 fond-ticket cursor-pointer select-none hover:shadow-md transition"
@@ -17,16 +40,3 @@
     <h3 class="font-normal text-center whitespace-pre-line break-words">{{ subtitle }}</h3>
   </div>
 </template>
-
-<script setup>
-import { ref } from "vue";
-const props = defineProps({
-  id: { type: [String, Number], required: true },
-  title: { type: String, required: true },
-  subtitle: { type: String, required: true },
-  no: { type: Number, default: null }
-});
-const emit = defineEmits(["remove"]);
-const showClose = ref(false);
-function toggleClose() { showClose.value = !showClose.value; }
-</script>

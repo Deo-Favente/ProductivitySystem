@@ -1,4 +1,12 @@
+/*
+  Nom : NewTask.vue
+  Description : Page pour créer une nouvelle tâche.
+  Auteur : Deo-Favente
+*/
+
 <script setup>
+
+// Imports
 import { ref, computed } from "vue";
 import { useTickets } from "../composables/useTickets";
 
@@ -11,10 +19,12 @@ const loading = ref(false);
 const errorMsg = ref("");
 
 const canSubmit = computed(() =>
+  // On peut soumettre si le titre fait au moins 2 caractères et qu'on n'est pas en train de charger
   title.value.trim().length >= 2 && !loading.value
 );
 
 async function submit() {
+  // Envoyer le formulaire
   errorMsg.value = "";
   if (!canSubmit.value) return;
   loading.value = true;
@@ -30,7 +40,7 @@ async function submit() {
     errorMsg.value = "Échec de la création. Réessaie.";
     console.error(e);
   } finally {
-        // Afficher un message de succès
+    // Afficher un message de succès
     loading.value = false;
   }
 }
@@ -102,7 +112,7 @@ async function submit() {
 
       <p v-if="errorMsg" class="text-red-600 text-sm">{{ errorMsg }}</p>
 
-      <!-- Bouton submit collant en bas (ergonomique mobile) -->
+      <!-- Bouton submit collant en bas -->
       <div class="sticky bottom-0 bg-white/90 backdrop-blur pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <div class="mx-auto max-w-md px-4">
           <button

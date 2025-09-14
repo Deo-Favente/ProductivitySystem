@@ -1,3 +1,9 @@
+/*
+  Nom : Agenda.vue
+  Description : Composant affichant les prochains événements d'un calendrier Google Calendar.
+  Auteur : Deo-Favente
+*/
+
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 
@@ -32,19 +38,19 @@ async function loadEvents() {
 }
 
 onMounted(() => {
-  loadEvents(); // premier chargement immédiat
-  intervalId = setInterval(loadEvents, 30_000); // toutes les 30s
+  loadEvents();
+  intervalId = setInterval(loadEvents, 30_000); // toutes les 30s actualisation
 });
 
 onUnmounted(() => {
   if (intervalId) clearInterval(intervalId);
 });
+
 </script>
 
 <template>
   <div class="w-full">
     <h2 class="text-xl text-center font-bold mb-4 text-gray-800">📅 Prochains événements</h2>
-
     <div v-if="loading" class="text-gray-500">Chargement...</div>
     <div v-else-if="events.length === 0" class="text-gray-400 text-lg text-center">Aucun événement à venir</div>
     <div v-else class="overflow-x-auto">
