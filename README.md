@@ -3,15 +3,14 @@
 Ce projet est un système de gestion de tâches basé sur la manipulation de cartes NFC. Il permet de créer, suivre et gérer des tâches en utilisant un lecteur de cartes NFC pour avoir une interaction physique. J'ai développé ce système pour améliorer ma productivité professionnelle, et je m'en sers quotidiennement.
 
 ## ✅ Principe
-Les tâches sont affichées sous la forme de 3 colonnes Kanban : À faire, En cours, Terminé. Chaque tâche est représentée par une carte NFC que l'on peut scanner pour la déplacer entre les colonnes. Le système enregistre automatiquement les changements et permet de suivre l'avancement des tâches.
-La motivation principale est de "gamifier" la réalisation des tâches en associant un objet physique (la carte NFC) à chaque tâche, ce qui rend l'expérience plus engageante et satisfaisante. Le fait de pouvoir toucher la carte et d'entendre un son de confirmation renforce le sentiment d'accomplissement.
+Les tâches sont affichées sous la forme de 3 colonnes Kanban : À faire, En cours, Terminé. Chaque tâche est représentée par une carte NFC que l'on peut scanner. Premier scan = La tâche est déplacée de "A faire" à "En cours", et deuxième scan la tâche rejoins la "pile" de tâches faites, permettant de visualiser tout le travail accompli jusqu'ici. La motivation principale est de "gamifier" la réalisation des tâches en associant un objet physique (la carte NFC) à chaque tâche, ce qui rend l'expérience plus engageante et satisfaisante. Le fait de pouvoir toucher la carte et d'entendre un son de confirmation renforce le sentiment d'accomplissement.
 
 ## ⌛ Processus de conception
 Pour l'histoire, je me suis inspiré de cette vidéo : 
 *"J'ai résolu mon TDAH avec une imprimante de reçus" - Coding with Lewis* <br>
 [![](https://markdown-videos-api.jorgenkh.no/youtube/xg45b8UXoZI)](https://youtu.be/xg45b8UXoZI)<br>
 Le principe est d'utiliser des objets physiques pour représenter des tâches, ce qui rend le tout motivant et ludique. Vu que je n'aime pas la pollution causée par les tickets papier, j'ai décidé d'utiliser des cartes NFC réutilisables et un lecteur NFC acheté d'occasion. (UTrust 3700F)
-J'affiche l'écran de gestion des tâches sur un écran secondaire fixé au mur, et j'utilise un Raspberry Pi pour faire tourner le serveur backend et le script de lecture des cartes NFC.
+J'affiche l'écran de gestion des tâches sur un écran secondaire fixé au mur, et j'utilise un Raspberry Pi pour faire tourner le serveur et y connecter le lecteur NFC.
 
 ## 📸 Photos du montage IRL
 (à venir)
