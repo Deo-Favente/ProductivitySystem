@@ -5,6 +5,8 @@
 */
 
 <script setup>
+
+// Imports
 import { ref, computed } from "vue";
 import { useTickets } from "../composables/useTickets";
 

@@ -4,6 +4,8 @@
   Auteur : Deo-Favente
 */
 
+
+// Variables internes
 let zoneEl = null;
 const papiers = [];
 let animationFrame = null;

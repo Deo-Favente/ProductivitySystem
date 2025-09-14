@@ -2,8 +2,9 @@
     Nom : storage.js
     Description : Gestion de la base de données (fichier JSON)
     Auteur : Deo-Favente
-*/
+    */
 
+// Imports
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";

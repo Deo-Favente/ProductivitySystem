@@ -4,6 +4,7 @@
   Auteur : Deo-Favente
 */
 
+// Imports
 import { ref } from "vue";
 const API = import.meta.env.VITE_API_BASE || "/api";
 const api = (path="") => `${API}${path.startsWith("/") ? path : `/${path}`}`; // Fonction pour construire les URLs d'API

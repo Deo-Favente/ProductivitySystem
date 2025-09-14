@@ -4,6 +4,8 @@
   Auteur : Deo-Favente
 */
 
+
+// Imports
 import { ref } from "vue";
 import { chargerPapier } from "../lib/paper.js";
 

@@ -5,6 +5,7 @@
 */
 
 <script setup>
+// Imports
 import { onMounted, ref } from "vue";
 import Ticket from "../components/Ticket.vue";
 import { setPaperZone } from
