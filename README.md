@@ -23,8 +23,8 @@ J'affiche l'écran de gestion des tâches sur un écran secondaire fixé au mur,
 - JSON pour le stockage local des données des cartes NFC.
 
 ## 💖 Si vous souhaitez réutiliser ce projet (pistes d'utilisation)
-1. Récupérez un lecteur NFC compatible PC/SC (ex: UTrust 3700F) et des cartes NFC réutilisables. Vous pouvez les numéroter avec un marqueur pour les différencier.
-2. Adapter les scripts dans `scripts/` selon vos besoins et installez les dépendances requises.
+1. Récupérez un lecteur NFC compatible PC/SC (ici UTrust 3700F) et des cartes NFC réutilisables. Vous pouvez les numéroter avec un marqueur pour les différencier.
+2. Adapter les scripts dans `scripts/` selon votre lecteur et installez les dépendances requises.
 3. Enregistrez les id de vos cartes NFC dans `cards.json` avec le script `scripts/read_cards.py`. Passez chaque carte 1 par 1 devant le lecteur pour les enregistrer sous un id unique de 1 à N. Vous n'aurez à le faire qu'une seule fois.
 4. Installez les dépendances du backend et frontend (`npm install` dans chaque dossier).
 5. Pour afficher les événements de votre calendrier Google, configurez les variables d'environnement dans le fichier `frontend/.env` du frontend. Entrez votre clé API Google (``VITE_API_KEY``) et un ID de calendrier **public** (`VITE_CALENDAR_ID`). Google est votre ami pour ça.
