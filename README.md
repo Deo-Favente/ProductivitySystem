@@ -9,7 +9,7 @@ La motivation principale est de "gamifier" la réalisation des tâches en associ
 ## Processus de conception
 Pour l'histoire, je me suis inspiré de cette vidéo : 
 *"J'ai résolu mon TDAH avec une imprimante de reçus" - Coding with Lewis* <br>
-[![](https://markdown-videos-api.jorgenkh.no/youtube/xg45b8UXoZI)](https://youtu.be/xg45b8UXoZI)
+[![](https://markdown-videos-api.jorgenkh.no/youtube/xg45b8UXoZI)](https://youtu.be/xg45b8UXoZI)<br>
 Le principe est d'utiliser des objets physiques pour représenter des tâches, ce qui rend le tout motivant et ludique. Vu que je n'aime pas la pollution causée par les tickets papier, j'ai décidé d'utiliser des cartes NFC réutilisables et un lecteur NFC acheté d'occasion. (UTrust 3700F)
 J'affiche l'écran de gestion des tâches sur un écran secondaire fixé au mur, et j'utilise un Raspberry Pi pour faire tourner le serveur backend et le script de lecture des cartes NFC.
 
