@@ -13,8 +13,8 @@ const canSubmit = computed(() => {
   return (
     !loading.value &&
     !isNaN(value) &&
-    isFinite(value) &&
-    value >= 1.0
+    isFinite(value)
+    //value >= 1.0
   );
 });
 
@@ -62,8 +62,7 @@ async function submit() {
           class="mt-1 w-full rounded-2xl border border-gray-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 no-spinners"
           v-model="amount"
           step="0.1"
-          min="1.00"
-        />
+      />
       </div>
 
       <!-- Instructions pour remplir -->
@@ -71,7 +70,7 @@ async function submit() {
         <strong class="font-semibold">Instructions :</strong>
         <p>
           Entrer le montant positif en euros. Par exemple, pour 49.99€, entrer <strong>49.99</strong>.
-          Le chiffre sera ajouté au total des entrées d'argent = le CA total.
+          Le chiffre correspondra au montant actuel de la trésorerie. (approximatif)
         </p>
       </div>
 

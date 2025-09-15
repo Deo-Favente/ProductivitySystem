@@ -104,8 +104,7 @@ function computeMetrics(metrics) {
   const n = arr.length;
   const current = n ? Number(arr[n - 1].amount) : 0;
   const previous = n > 1 ? Number(arr[n - 2].amount) : 0;
-  // Augmentation par rapport au total précédent (en pourcentage)
-  const growthPercent = previous === 0 ? (current === 0 ? 0 : 100) : ((current - previous) / previous) * 100;
+  const growthPercent = previous === 0 ? 0 : ((current - previous) / Math.abs(previous)) * 100;
   // Somme totale de tous les montants
   const sum = arr.reduce((acc, entry) => acc + (Number(entry.amount) || 0), 0);
   return { currentAmount: current, previousAmount: previous, growthPercent, totalAmount: sum };
