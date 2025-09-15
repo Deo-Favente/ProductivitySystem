@@ -8,7 +8,7 @@
 import express from "express";
 import cors from "cors";
 import { withDB } from "./storage.js";
-import { migrateNumericIds, nextFreeId, findTicket, moveTicket } from "./utils.js";
+import { migrateNumericIds, nextFreeId, findTicket, moveTicket, computeMetrics } from "./utils.js";
 
 // Création de l'app Express
 const app = express();

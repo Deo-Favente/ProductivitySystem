@@ -5,7 +5,7 @@
 """
 
 # Imports
-import os, json, time, signal, threading, subprocess, requests
+import json, time, signal, threading, subprocess, requests, dotenv
 from pathlib import Path
 from smartcard.System import readers
 from smartcard.CardRequest import CardRequest
@@ -14,9 +14,9 @@ from smartcard.CardConnection import CardConnection
 from smartcard.Exceptions import CardConnectionException, NoCardException
 
 # Constantes
-API_BASE = os.getenv("API_BASE")
-CARDS_PATH = Path("data/cards.json")
-TICKETS_PATH = Path("data/tickets.json")
+API_BASE = dotenv.dotenv_values(".env")["VITE_API_BASE"]
+CARDS_PATH = Path("backend/data/cards.json")
+TICKETS_PATH = Path("backend/data/tickets.json")
 START_WAV   = Path("audio/start.wav")
 COMPLETE_WAV= Path("audio/complete.wav")
 
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         reader = pick_contactless_utrust()
         print("Lecteur:", reader)
     except Exception as e:
-        print("Erreur lecteur:", e); return
+        print("Erreur lecteur:", e)
 
     print("Présentez une carte… (Ctrl+C pour quitter)")
     last_uid = None
@@ -205,6 +205,3 @@ if __name__ == "__main__":
         last_uid = uid
         # attendre retrait avant nouveau tour (évite double déclenchement)
         wait_card_removed_polling(reader)
-        
-    finally:
-        print("\nArrêt propre.")
