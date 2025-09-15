@@ -10,7 +10,7 @@ async function loadMetrics() {
   const res = await fetch(api("/metrics"));
   if (!res.ok) throw new Error(`GET /api/metrics -> ${res.status}`);
   const data = await res.json();
-  amount.value = Number(data.currentAmount || 0);
+  amount.value = Number(data.totalAmount || 0);
   growth.value = Number(data.growthPercent || 0);
 }
 
@@ -22,7 +22,7 @@ async function submitAmount(newAmount) {
   });
   if (!res.ok) throw new Error("Envoi du montant échoué");
   const data = await res.json();
-  amount.value = Number(data.currentAmount || 0);
+  amount.value = Number(data.totalAmount || 0);
   growth.value = Number(data.growthPercent || 0);
 }
 

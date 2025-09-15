@@ -207,8 +207,11 @@ function computeMetrics(metrics) {
   const n = arr.length;
   const current = n ? Number(arr[n - 1].amount) : 0;
   const previous = n > 1 ? Number(arr[n - 2].amount) : 0;
-  const growthPercent = previous > 0 ? ((current - previous) / previous) * 100 : 0;
-  return { currentAmount: current, previousAmount: previous, growthPercent };
+  // Croissance = la dernière somme rentrée par rapport à la somme totale avant cette entrée
+  const growthPercent = previous ? Math.round(((current - previous) / previous) * 100) : (n === 1 ? 100 : 0);
+  // Somme totale de toutes les entrées
+  const sum = arr.reduce((acc, item) => acc + Number(item.amount), 0);
+  return { currentAmount: current, previousAmount: previous, growthPercent, totalAmount: sum };
 }
 
 app.get("/api/metrics", async (_req, res) => {
@@ -217,7 +220,7 @@ app.get("/api/metrics", async (_req, res) => {
 });
 
 app.post("/api/metrics/amount", async (req, res) => {
-  const { amount } = req.body || {};
+  const amount = req.body?.amount;
   const value = Number(amount);
   if (!Number.isFinite(value)) return res.status(400).json({ error: "amount doit être un nombre" });
 

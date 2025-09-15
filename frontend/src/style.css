@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-vert: #8CD47E;
-  --color-orang: #F8D66D;
-  --color-rouge: #FF6961;
+  --color-vert: #8cd47e;
+  --color-orang: #f8d66d;
+  --color-rouge: #ff6961;
 }
 .papier {
   position: absolute;
@@ -31,9 +31,10 @@
 .fond-ticket {
   background: url("/texture-papier.jpg");
   background-size: cover;
-  --m:
-    conic-gradient(from 45deg at left, #0000, #000 1deg 89deg, #0000 90deg) left /51% 10px repeat-y,
-    conic-gradient(from -135deg at right, #0000, #000 1deg 89deg, #0000 90deg) right/51% 10px repeat-y;
+  --m: conic-gradient(from 45deg at left, #0000, #000 1deg 89deg, #0000 90deg)
+      left / 51% 10px repeat-y,
+    conic-gradient(from -135deg at right, #0000, #000 1deg 89deg, #0000 90deg)
+      right/51% 10px repeat-y;
   -webkit-mask: var(--m);
   mask: var(--m);
 }
@@ -60,7 +61,7 @@ body {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-play-state: running;
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
 }
 
 .scroller.is-paused .scroller__track {
@@ -75,11 +76,25 @@ body {
 
 /* Animation: fait défiler la hauteur du contenu original */
 @keyframes autoscroll-y {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(0, var(--scroll-distance, -100%), 0); }
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, var(--scroll-distance, -100%), 0);
+  }
 }
 
 /* Accessibilité: pas d’animation si l’utilisateur préfère réduire */
 .scroller.reduced-motion .scroller__track {
   animation: none !important;
+}
+
+.no-spinners {
+  -moz-appearance: textfield;
+}
+
+.no-spinners::-webkit-outer-spin-button,
+.no-spinners::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
