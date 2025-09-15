@@ -129,7 +129,6 @@ app.get("/api/meta", async (_req, res) => {
 // GET /api/metrics
 app.get("/api/metrics", async (_req, res) => {
   // Récupérer les métriques (historique des montants)
-
   const data = await withDB((db) => ({ value: db.metrics ?? { amounts: [] }, persist: false }));
   res.json(computeMetrics(data));
 });

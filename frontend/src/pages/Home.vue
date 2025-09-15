@@ -69,7 +69,7 @@ function handleRemove(id) { deleteTicket(id).catch(console.error); }
           <h2 class="font-medium text-4xl sm:text-5xl md:text-6xl"> {{ amount.toLocaleString('fr-FR') }} € </h2>
         </div>
         <div class="bg-gray-400 rounded-xl flex flex-col items-center justify-center font-bold text-gray-800 min-h-0">
-          <h1>Croissance</h1>
+          <h1>Croissance par rapport à la dernière entrée</h1>
           <h2 class="font-medium text-4xl sm:text-5xl md:text-6xl"> {{ growth.toFixed(1) }}% </h2>
         </div>
         <div class="flex flex-col min-h-0 w-full">
