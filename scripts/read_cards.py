@@ -1,27 +1,34 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""
+    Nom : read_cards.py
+    Description : Script pour lire les cartes RFID/NFC et agir sur les tickets via une API REST. (script principal)
+    Auteur : Deo-Favente
+"""
 
-import os, json, time, signal, threading, subprocess
+# Imports
+import json, time, signal, threading, subprocess, requests, dotenv
 from pathlib import Path
-
-import requests
 from smartcard.System import readers
 from smartcard.CardRequest import CardRequest
 from smartcard.CardType import AnyCardType
 from smartcard.CardConnection import CardConnection
 from smartcard.Exceptions import CardConnectionException, NoCardException
 
-# ---------- Config ----------
-API_BASE = "http://192.168.1.89:3001/api"
-CARDS_PATH = Path("/home/pi/Desktop/ProductivitySystem/backend/data/cards.json")
-TICKETS_PATH = Path("/home/pi/Desktop/ProductivitySystem/backend/data/tickets.json")
-START_WAV   = Path("/home/pi/Desktop/ProductivitySystem/frontend/public/start.wav")
-COMPLETE_WAV= Path("/home/pi/Desktop/ProductivitySystem/frontend/public/complete.wav")
+# Constantes
+API_BASE = dotenv.dotenv_values(".env")["VITE_API_BASE"]
+CARDS_PATH = Path("backend/data/cards.json")
+TICKETS_PATH = Path("backend/data/tickets.json")
+START_WAV   = Path("audio/start.wav")
+COMPLETE_WAV= Path("audio/complete.wav")
 
 GET_UID_APDU = [0xFF, 0xCA, 0x00, 0x00, 0x00]
 STOP = threading.Event()
 
-# ---------- Audio helpers ----------
+def sigint_handler(sig, frame): 
+    """Gestion Ctrl+C pour arrêt propre."""
+    STOP.set()
+signal.signal(signal.SIGINT, sigint_handler)
+
+# Audio
 def _synth_beep(path: Path, freq=880, ms=180, vol=0.35, rate=44100):
     """Crée un petit bip .wav (standard lib seulement)."""
     import wave, struct, math
@@ -33,6 +40,7 @@ def _synth_beep(path: Path, freq=880, ms=180, vol=0.35, rate=44100):
             w.writeframes(struct.pack("<h", int(max(-1, min(1, s)) * 32767)))
 
 def _ensure_wav(path: Path):
+    """Crée le bip si le fichier n'existe pas déjà."""
     try:
         if not path.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -48,19 +56,18 @@ def play(path: Path):
     except FileNotFoundError:
         print("\a", end="", flush=True)  # fallback beep
 
-# ---------- Files ----------
+# Fichiers JSON
 def load_json_safe(path: Path, default):
+    """Charge un JSON, tolérant au fichier vide ou corrompu."""
     try:
         txt = path.read_text(encoding="utf-8").strip()
         return json.loads(txt) if txt else default
     except (FileNotFoundError, json.JSONDecodeError):
         return default
 
-# ---------- NFC ----------
-def sigint_handler(sig, frame): STOP.set()
-signal.signal(signal.SIGINT, sigint_handler)
-
+# NFC
 def pick_contactless_utrust():
+    """Sélectionne un lecteur PC/SC contactless UTrust/NFC si possible."""
     rl = readers()
     if not rl: raise RuntimeError("Aucun lecteur PC/SC détecté.")
     def score(r):
@@ -113,7 +120,7 @@ def wait_card_removed_polling(reader, poll_timeout_s=0.3):
         except Exception:
             break
 
-# ---------- Mapping & actions ----------
+# Mapping
 def uid_to_ticket_id(uid_hex):
     db = load_json_safe(CARDS_PATH, {"cards": []})
     for c in db.get("cards", []):
@@ -157,13 +164,13 @@ def act_on_ticket(ticket_id, column) -> str:
         print("[ERREUR réseau]:", e)
         return None
 
-# ---------- Boucle principale ----------
-def main_loop():
+# Programme principal
+if __name__ == "__main__":
     try:
         reader = pick_contactless_utrust()
         print("Lecteur:", reader)
     except Exception as e:
-        print("Erreur lecteur:", e); return
+        print("Erreur lecteur:", e)
 
     print("Présentez une carte… (Ctrl+C pour quitter)")
     last_uid = None
@@ -198,9 +205,3 @@ def main_loop():
         last_uid = uid
         # attendre retrait avant nouveau tour (évite double déclenchement)
         wait_card_removed_polling(reader)
-
-if __name__ == "__main__":
-    try:
-        main_loop()
-    finally:
-        print("\nArrêt propre.")

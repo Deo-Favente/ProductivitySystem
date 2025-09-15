@@ -1,6 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""
+    Nom : add_new_cards.py
+    Description : Script pour ajouter de nouvelles cartes RFID/NFC au fichier JSON.
+    Auteur : Deo-Favente
+"""
 
+# Imports
 import time, threading, signal, json, os
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -10,18 +14,25 @@ from smartcard.CardRequest import CardRequest
 from smartcard.CardType import AnyCardType
 from smartcard.CardConnection import CardConnection
 from smartcard.Exceptions import CardConnectionException, NoCardException
-import json
 
-GET_UID_APDU = [0xFF, 0xCA, 0x00, 0x00, 0x00]  # -> UID + 0x90 0x00 si OK
+# Constantes
 DB_PATH = Path("../backend/data/cards.json")
+GET_UID_APDU = [0xFF, 0xCA, 0x00, 0x00, 0x00]  # -> UID + 0x90 0x00 si OK
+STOP = threading.Event()
+
+def sigint_handler(sig, frame):
+    """Gestion Ctrl+C pour arrêt propre."""
+    STOP.set()
+signal.signal(signal.SIGINT, sigint_handler) 
 
 def _ensure_db():
+    """Crée le fichier JSON s'il n'existe pas déjà."""
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     if not DB_PATH.exists():
         DB_PATH.write_text(json.dumps({"cards": []}, ensure_ascii=False, indent=2), encoding="utf-8")
 
-
 def _load_db():
+    """Charge le JSON, tolérant au fichier vide ou corrompu."""
     _ensure_db()
     try:
         with DB_PATH.open("r", encoding="utf-8") as f:
@@ -42,10 +53,7 @@ def _save_db(data: dict):
     with NamedTemporaryFile("w", delete=False, dir=str(DB_PATH.parent), encoding="utf-8") as tmp:
         json.dump(data, tmp, ensure_ascii=False, indent=2)
         tmp_path = Path(tmp.name)
-    os.replace(tmp_path, DB_PATH)  # atomic move
-
-
-import json
+    os.replace(tmp_path, DB_PATH)  # atomique sur le même système de fichiers
 
 def is_card_registered(uid):
     """Vérifie si une carte est déjà enregistrée (robuste si fichier vide)."""
@@ -118,13 +126,8 @@ def register_new_card(uid):
 
     print("Nouvelle carte, uid : " + str(card_data.get("uid")) + ", id : " + str(card_data.get("id")))
 
-stop = threading.Event()
-
-def sigint_handler(sig, frame):
-    stop.set()
-signal.signal(signal.SIGINT, sigint_handler)  # Ctrl+C -> stop.set()
-
 def pick_contactless_utrust():
+    """Sélectionne un lecteur PC/SC contactless UTrust/NFC si possible."""
     rl = readers()
     if not rl:
         raise RuntimeError("Aucun lecteur PC/SC détecté.")
@@ -134,9 +137,10 @@ def pick_contactless_utrust():
         if "utrust" in s or "identiv" in s: pts += 2
         if any(k in s for k in ("contactless"," cl","nfc","picc")): pts += 5
         return pts
-    return sorted(rl, key=lambda r: (-score(r), str(r)))[0]
+    return sorted(rl, key=lambda r: (-score(r), str(r)))[0] # meilleur score 
 
 def connect_safely(conn):
+    """Essaye de se connecter en T1 puis T0, retourne True si OK."""
     try:
         conn.connect(CardConnection.T1_protocol); return True
     except Exception:
@@ -146,6 +150,7 @@ def connect_safely(conn):
             return False
 
 def get_uid(conn):
+    """Envoie la commande GET UID et retourne l'UID (str) ou None si erreur."""
     try:
         data, sw1, sw2 = conn.transmit(GET_UID_APDU)
         if sw1 == 0x90 and sw2 == 0x00 and data:
@@ -156,7 +161,7 @@ def get_uid(conn):
 
 def read_uid_polling(reader, poll_timeout_s=0.5, attempts=10):
     """
-    Attend la présence carte via petits timeouts (polling) -> Ctrl+C réagit instant.
+    Attend la présence carte via petits timeouts (polling).
     Tente plusieurs connexions rapides pour tolérer les faux contacts.
     Retourne l'UID (str) ou None si rien de stable.
     """
@@ -184,19 +189,7 @@ def read_uid_polling(reader, poll_timeout_s=0.5, attempts=10):
             pass
     return None
 
-def wait_card_removed_polling(reader, poll_timeout_s=0.3):
-    """Boucle jusqu’au retrait de la carte (polling non bloquant)."""
-    while not stop.is_set():
-        try:
-            # Si on VOIT encore une carte, on attend un peu et on continue
-            req = CardRequest(timeout=poll_timeout_s, readers=[reader], cardType=AnyCardType())
-            _ = req.waitforcard()
-            time.sleep(0.2)
-            continue
-        except Exception:
-            # timeout: pas de carte détectée -> retirée
-            break
-
+# Programme principal
 if __name__ == "__main__":
     try:
         reader = pick_contactless_utrust()

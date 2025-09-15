@@ -1,4 +1,12 @@
+/*
+  Nom : NewTask.vue
+  Description : Page pour créer une nouvelle tâche.
+  Auteur : Deo-Favente
+*/
+
 <script setup>
+
+// Imports
 import { ref, computed } from "vue";
 import { useTickets } from "../composables/useTickets";
 
@@ -11,10 +19,12 @@ const loading = ref(false);
 const errorMsg = ref("");
 
 const canSubmit = computed(() =>
+  // On peut soumettre si le titre fait au moins 2 caractères et qu'on n'est pas en train de charger
   title.value.trim().length >= 2 && !loading.value
 );
 
 async function submit() {
+  // Envoyer le formulaire
   errorMsg.value = "";
   if (!canSubmit.value) return;
   loading.value = true;
@@ -30,7 +40,7 @@ async function submit() {
     errorMsg.value = "Échec de la création. Réessaie.";
     console.error(e);
   } finally {
-        // Afficher un message de succès
+    // Afficher un message de succès
     loading.value = false;
   }
 }
@@ -41,7 +51,7 @@ async function submit() {
     <!-- Header mobile -->
     <div class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-gray-200 flex justify-center">
       <div class="mx-auto max-w-md px-4 py-3 flex items-center gap-3">
-        <button @click="$router.back()" class="text-blue-600 font-medium">Retour</button>
+        <a class="text-blue-600 font-medium" href="/">Retour</a>
         <h1 class="text-lg font-semibold">Nouvelle tâche</h1>
       </div>
     </div>
@@ -93,7 +103,7 @@ async function submit() {
       <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
           <strong class="font-medium text-yellow-800">Instructions</strong><br>
           <ul class="list-disc list-inside mt-1 space-y-1 text-yellow-800 text-sm">
-            <li> <strong>Les tâches non liées au travail</strong> (vie perso) vont dans l'<strong>appli mobile</strong>.</li>
+            <li> <strong>Les tâches non liées au travail</strong> (vie perso) vont dans une <strong>appli de Todo.</strong> (ex : Google Tasks)</li>
             <li> <strong>Les rendez-vous non déplaçables, habituels</strong> (ex: cours) ou ponctuels (ex: psy, médecin) <strong>vont dans le calendrier.</strong></li>
             <li> Une tâche doit être <strong>claire, atomique, mesurable en résultats</strong> (fait / pas fait).</li>
             <li> Il est conseillé de <strong>découper les grosses tâches</strong> en sous-tâches plus petites. Chaque ticket doit durer <strong>quelques heures maximum.</strong></li>
@@ -102,7 +112,7 @@ async function submit() {
 
       <p v-if="errorMsg" class="text-red-600 text-sm">{{ errorMsg }}</p>
 
-      <!-- Bouton submit collant en bas (ergonomique mobile) -->
+      <!-- Bouton submit collant en bas -->
       <div class="sticky bottom-0 bg-white/90 backdrop-blur pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <div class="mx-auto max-w-md px-4">
           <button
